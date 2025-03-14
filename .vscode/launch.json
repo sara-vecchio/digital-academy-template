@@ -10,7 +10,8 @@
             "type": "plc-debug",
             "request": "launch",
             "program": "${workspaceFolder}",
-            "ip": "192.168.0.1"
+            "ip": "192.168.99.23",
+            "certificate": "${workspaceFolder}/certificate/reference_x509.crt"      
         }
     ]
 }

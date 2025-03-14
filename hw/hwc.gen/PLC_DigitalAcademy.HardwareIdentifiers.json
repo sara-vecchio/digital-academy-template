@@ -1,0 +1,77 @@
+{
+  "Version": 1,
+  "HardwareIdentifiers": [
+    {
+      "Name": "PLC_DigitalAcademy_Station",
+      "Value": 32
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~AI_8_HF_extra~AI_8_HF_extra",
+      "Value": 257
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~AI_8_HF~AI_8_HF",
+      "Value": 260
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~DI_16_HF~DI_16_HF",
+      "Value": 259
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~DI_32_HF~DI_32_HF",
+      "Value": 262
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~DQ_16_HF~DQ_16_HF",
+      "Value": 258
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~DQ_32_HF~DQ_32_HF",
+      "Value": 261
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy",
+      "Value": 48
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~CPU display_1",
+      "Value": 54
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~Card reader/writer_1",
+      "Value": 51
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~Interface1",
+      "Value": 64
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~Interface1~Port_1",
+      "Value": 65
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~Interface1~Port_2",
+      "Value": 66
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~OPC UA_1",
+      "Value": 117
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~PROFINET interface_2",
+      "Value": 72
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~PROFINET interface_2~Port_1",
+      "Value": 73
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~PLC_DigitalAcademy~Virtual communication interface",
+      "Value": 135
+    },
+    {
+      "Name": "PLC_DigitalAcademy_Station~Rail_0",
+      "Value": 256
+    }
+  ]
+}

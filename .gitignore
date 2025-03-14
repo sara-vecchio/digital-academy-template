@@ -1,5 +1,8 @@
 .apax
 .env
 bin
+hw\*
+!hw\*hwl.yml
 obj
+SystemConstants
 testresult

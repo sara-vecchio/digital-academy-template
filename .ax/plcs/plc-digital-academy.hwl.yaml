@@ -1,0 +1,2 @@
+host: 192.168.99.23
+certificate: certificate\reference_x509.crt

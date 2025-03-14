@@ -1,0 +1,5 @@
+{
+    "tracing.pinnedPlcs": [
+        "PLC_DigitalAcademy.yaml"
+    ]
+}

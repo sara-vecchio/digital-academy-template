@@ -1,32 +1,108 @@
 # General information
-name: "digital-academy-template"
+name: "digitalacademy-template"
 version: 0.0.1
 type: app
 # Description for your application example or app
-description: <Description for your application example or app>
+description: Template per progetto Digital Academy con SIMATIC AX
 # Targets to be compiled with 'apax build'
 targets:
   - "1500"
   - llvm
+
+catalogs:
+  "@ax/simatic-ax": ^2411.1.0
 # Dependencies
 devDependencies:
-  "@ax/sdk": 2411.0.0
+  "@ax/sdk": 2411.1.0
+  #dependencies:
+  #"@ax/simatic-1500-tasks": 7.0.6
+  #"@ax/system-timer": 8.0.7
+  #"@ax/system-edgedetection": 8.0.7  
+  #"@ax/opcua-server-config": 2.0.0
 
-# Project variables
+  # Project variables
 variables:
   APAX_BUILD_ARGS:
     - --debug # Enable debug information for value debugging 
-  BIN_FOLDER: "./bin/1500" # choose your target RT, here : any S7-1500 PLC
+  HW_BIN_FOLDER: ./hw/bin
+  SW_BIN_FOLDER: ./bin/1500 # choose your target RT, here : any S7-1500 PLC
   # IP address must match with the IP address of your target device
   # The IP address in the .vscode/launch.json must be equal  
-  IP_ADDRESS: "192.168.0.1"
+  IP_ADDRESS: 192.168.99.23
 
-# Apax scripts
+  MASTER_PW: "Siemens$1"
+  # The locations of the certificate files
+  TLS_CONNECT_CERTFILE: "certificate/reference_x509.crt"
+  TLS_IMPORT_CERTFILE: "certificate/containerWithPublicAndPrivateKeys_x509.p12"
+  # The password for importing the certificate. 
+  # Disclaimer: 
+  # Normally the password should not be in the code as a readable variable. This is only the case here as it is a simple example.
+  CERT_PW: "CertSiemens$1"
+  # The name of the plc in the file myPLC.hwl.json. 
+  # The name should be specified before creating the plc security file, as the files are assigned using the plc name.
+  PLC_Name: "PLC_DigitalAcademy"
+  HW_DECLARATION: "hw/hardware-digital-academy.hwl.yml"
+
 scripts:
-  # call 'apax load' to download the builded program to the target. An 'apax build' might be required upfront
-  load: apax sld load --input $BIN_FOLDER --target $IP_ADDRESS --restart
-    --accept-security-disclaimer --log debug
-  # call 'apax dlplc' to build and download the application to the target
+  ############### Inital runs for PLC / PLC Name changes ###########################
+  # The bash function provide the easy creation of certificates via open ssl and then moves the certificate to the certificate folder. 
+  # In order to call the script, the access level must be authorized at the beginning.
+  create_certificate:
+    - chmod +x certificate/createCertificateViaOpenSSL.sh
+    - certificate/createCertificateViaOpenSSL.sh
+    - echo "set in the apax.yml the variable CERT_PW to the value that you insert as password of import of certificate"
+  # Creates the file for the security configuration for the PLC : PLC_IT.SecurityConfiguration.json
+  hwc_setup_secure_communication: hwc setup-secure-communication --name $PLC_Name --input $HW_DECLARATION --password:$MASTER_PW
+  # Imports the certificate for TLS (Transport Layer Security) communication in the project to the PLC : associazione tra certificato e securityconfiguration.json
+  hwc_import_certificate: hwc import-certificate --name $PLC_Name --input $HW_DECLARATION --certificate $TLS_IMPORT_CERTFILE --password $CERT_PW --purpose TLS
+  hwc_import_webcert: hwc import-certificate --name $PLC_Name --input $HW_DECLARATION --certificate $TLS_IMPORT_CERTFILE --password $CERT_PW --purpose WebServer
+  #hwc_import_opcuacert: hwc import-certificate --name $PLC_Name --input $HW_DECLARATION --certificate $TLS_IMPORT_CERTFILE --password $CERT_PW --purpose OpcUaServer
+  #hwc_accesslevel: hwc set-accessprotection-password --name $PLC_Name --input $HW_DECLARATION --level FullAccess --password $MASTER_PW
+  hwc_importcerts:
+    - apax hwc_import_certificate
+    - apax hwc_import_webcert
+    #- apax hwc_import_opcuacert
+  initial:
+    - apax install --catalog
+    - apax create_certificate
+    - apax hwc_setup_secure_communication
+    - apax generate_users
+    - apax hwc_importcerts
+  reset:
+    - rm -r $HW_BIN_FOLDER/*
+    - rm -r hw/hwc.gen
+    # to start from scratch delete all the content of hwc.gen and certificate (except for *.sh)
+
+    ##################################### users #################
+  generate_users: hwc manage-users -i $HW_DECLARATION -n $PLC_Name set-password --userName "Admin" --password $MASTER_PW
+  # apax hwc manage-users set-password 
+  # -u, --userName <userName> (REQUIRED)      The name of the user to set the password for.
+  # -p, --password <password> (REQUIRED)      The password to set
+  # -i, --input <input> (REQUIRED)            A single hardware configuration file or a directory containing hardware configuration files. 
+  # --project <project>                       The directory of the project (the directory that contains the apax.yml file)
+  # -n, --moduleName <moduleName> (REQUIRED)  The name of the module for which to configure users. (Il file di configurazione può contenere più PLC)
+  ##################################################################################
+  # Compile the hardware description (input:sources) to target specific data (output:binaries) and update the IO- and HwIdent mapping (SystemConstants)
+  hw_compile: hwc compile --input $HW_DECLARATION --output $HW_BIN_FOLDER
+  # load the target specific hardware data (binaries) to the PLC
+  hw_load: hwld --input $HW_BIN_FOLDER/$PLC_Name -t $IP_ADDRESS --accept-security-disclaimer -C $TLS_CONNECT_CERTFILE -M:$MASTER_PW --restart # se la voglio mandare in run direttamente
+  # Call 'apax load' to download the builded program to the target. An 'apax build' might be required upfront
+  load: apax sld load --input $SW_BIN_FOLDER -t $IP_ADDRESS  --restart --accept-security-disclaimer --log debug -C $TLS_CONNECT_CERTFILE
+  # Call 'apax dlplc' to build and download the application to the target
+  #uninstallopcuaserver: apax oscr uninstall -s --target $IP_ADDRESS --accept-security-disclaimer -C $TLS_CONNECT_CERTFILE -u Admin -p $MASTER_PW
+  #installopcuaserver: apax oscr install -s --input $SW_BIN_FOLDER --target $IP_ADDRESS --accept-security-disclaimer -C $TLS_CONNECT_CERTFILE -u Admin -p $MASTER_PW
+  #exportopcuaserver: apax oscr export --input $SW_BIN_FOLDER --output <path_to_interface.yml>​
   dlplc:
     - apax build
     - apax load
+  # Compiles the hardware and software and then loads it onto the PLC
+  compile_and_load_all:
+    - apax hw_compile
+    - apax hw_load
+    - apax dlplc
+  # - apax uninstallopcuaserver
+  # - apax installopcuaserver
+
+  #monitor: apax mon --targetIP $IP_ADDRESS --certificate $TLS_CONNECT_CERTFILE --file ./test/mon/watchtable.mon --continuously
+  #loginaxwithoutbrowser: apax login --registry https://registry.simatic-ax.siemens.io --password 
+  #updatecatalog: apax update --catalog @ax/simatic-ax

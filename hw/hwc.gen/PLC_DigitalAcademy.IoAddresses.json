@@ -1,0 +1,83 @@
+{
+  "Version": 1,
+  "IoAddresses": [
+    {
+      "Ref": "PLC_DigitalAcademy_Station/AI_8_HF",
+      "IoConfiguration": {
+        "InputAddress": [
+          {
+            "StartAddress": "6.0",
+            "EndAddress": "21.7",
+            "Length": 128,
+            "Source": "UserDefined"
+          }
+        ]
+      }
+    },
+    {
+      "Ref": "PLC_DigitalAcademy_Station/AI_8_HF_extra",
+      "IoConfiguration": {
+        "InputAddress": [
+          {
+            "StartAddress": "22.0",
+            "EndAddress": "37.7",
+            "Length": 128,
+            "Source": "UserDefined"
+          }
+        ]
+      }
+    },
+    {
+      "Ref": "PLC_DigitalAcademy_Station/DI_16_HF",
+      "IoConfiguration": {
+        "InputAddress": [
+          {
+            "StartAddress": "4.0",
+            "EndAddress": "5.7",
+            "Length": 16,
+            "Source": "UserDefined"
+          }
+        ]
+      }
+    },
+    {
+      "Ref": "PLC_DigitalAcademy_Station/DI_32_HF",
+      "IoConfiguration": {
+        "InputAddress": [
+          {
+            "StartAddress": "0.0",
+            "EndAddress": "3.7",
+            "Length": 32,
+            "Source": "UserDefined"
+          }
+        ]
+      }
+    },
+    {
+      "Ref": "PLC_DigitalAcademy_Station/DQ_16_HF",
+      "IoConfiguration": {
+        "OutputAddress": [
+          {
+            "StartAddress": "4.0",
+            "EndAddress": "5.7",
+            "Length": 16,
+            "Source": "UserDefined"
+          }
+        ]
+      }
+    },
+    {
+      "Ref": "PLC_DigitalAcademy_Station/DQ_32_HF",
+      "IoConfiguration": {
+        "OutputAddress": [
+          {
+            "StartAddress": "0.0",
+            "EndAddress": "3.7",
+            "Length": 32,
+            "Source": "UserDefined"
+          }
+        ]
+      }
+    }
+  ]
+}

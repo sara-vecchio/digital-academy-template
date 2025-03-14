@@ -1,0 +1,81 @@
+Devices:
+  - Name: PLC_DigitalAcademy_Station
+    Modules:
+      - Name: PLC_DigitalAcademy
+        TypeIdentifier:
+          OrderNumber: 6ES7 515-2AN03-0AB0 #1515
+          Version: V3.1 #4.0 not yet supported
+
+          #Disclaimer:
+          #Normally the setting should stand on NoAccess NOT FullAccess and an access concept was created.
+          #This is only the case here as it is a simple example.
+        AccessProtection:
+          AccessLevel: FullAccess
+
+        Services:
+          - Type: WebServer
+            Enabled: True
+            Parameters:
+              HttpsOnly: False
+
+        Interfaces:
+          - Name: Interface1
+            Label: X1
+            Addresses:
+              Configured:
+                - IPv4:
+                    192.168.99.23/24
+                    #/24->subnet
+        UserManagement:
+          Roles:
+            - Name: WebServerAccessRole
+              FunctionRights:
+                - ReadPlcVariables
+                - WritePlcVariables
+                - ReadFiles
+                - QueryDiagnostics
+                - FlashLed
+
+          Users:
+            - Name: Admin
+              AssignedRoles:
+                - WebServerAccessRole   
+      #apax hwc 'get-supported-devices' 
+      - Name: DI_32_HF # 8bit per MainRoute, 8bit per TanksConveyors, 8bit per colorSensor, 8 bit per Tanks
+        TypeIdentifier:
+          OrderNumber: 6ES7 521-1BL00-0AB0 #DI 32x24VDC HF 
+          Version: V2.2 
+        IoConfiguration:
+          InputAddress: '0.0'
+      - Name: DQ_32_HF # 8bit per MotorMainRoute, 8bit per MotorTanks, 8bit per Divertors, 8 bit per Tanks
+        TypeIdentifier:
+          OrderNumber: 6ES7 522-1BL01-0AB0 #DQ 32x24VDC/0.5A HF
+          Version: V1.1  
+        IoConfiguration:
+          OutputAddress: '0.0'
+      - Name: AI_8_HF # 8 colori per Divertors
+        TypeIdentifier:
+          OrderNumber: 6ES7 531-7NF00-0AB0 #AI 8xU/I HF
+          Version: V1.2 
+        IoConfiguration:
+          InputAddress: '6'
+      - Name: DI_16_HF # 7bit per (inFeed, coda) x conveyor, tankconveyor, color sensor, tankRicette
+        TypeIdentifier:
+          OrderNumber: 6ES7 521-1BH00-0AB0 #DI 16x24VDC HF
+          Version: V2.2           
+        IoConfiguration:
+          InputAddress: '4.0'
+      - Name: DQ_16_HF # 8bit per (inFeed, coda) x motorconveyor, motortankconveyor, divertors
+        TypeIdentifier:
+          OrderNumber: 6ES7 522-1BH01-0AB0 #DQ 16x24VDC/0.5A HF 
+          Version: V1.1              
+        IoConfiguration:
+          OutputAddress: '4.0'
+      - Name: AI_8_HF_extra # 2 colori per Divertor inFeed e Divertor coda
+        TypeIdentifier:
+          OrderNumber: 6ES7 531-7NF00-0AB0 #AI 8xU/I HF
+          Version: V1.2              
+        IoConfiguration:
+          InputAddress: '22'
+ 
+ 
