@@ -1,6 +1,6 @@
 
-
 PROGRAM MainProgram
+
     VAR_EXTERNAL
     END_VAR
     
@@ -9,8 +9,5 @@ PROGRAM MainProgram
 
     VAR_TEMP
     END_VAR
-    ;
-    ;
-    ; //prova modifica ale
 
 END_PROGRAM

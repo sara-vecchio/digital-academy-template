@@ -7,16 +7,15 @@ NAMESPACE Libreria
         VAR 
             ID:INT;
             isEmpty: BOOL;
-            actualState : Tipi.stato;
-            CntrlForward : BOOL;    // Comando per andare avanti
-            CntrlBackward : BOOL;   // Comando per andare indietro
+            actualState : stato;
+            CntrlForward : BOOL;    // Comando avanti
+            CntrlBackward : BOOL;   // Comando indietro
             isForward : BOOL;    // Uscita avanti
             isBackward : BOOL;   // Uscita indietro
         END_VAR
         
-        METHOD Init
-            // Inizializza il motore
-            actualState := Tipi.stato#stop;
+        METHOD Init  // Init motor
+            actualState := stato#stop;
             CntrlForward := FALSE;
             CntrlBackward := FALSE;
             isForward := FALSE;
@@ -26,35 +25,34 @@ NAMESPACE Libreria
         METHOD Update
             
             IF CntrlForward AND NOT CntrlBackward THEN
-                actualState := Tipi.stato#forward;
+                actualState := stato#forward;
             ELSIF CntrlBackward AND NOT CntrlForward THEN
-                actualState := Tipi.stato#backward;
+                actualState := stato#backward;
             ELSE
-                actualState := Tipi.stato#stop;
+                actualState := stato#stop;
             END_IF;
         
             CASE actualState OF
-                tipi.stato#forward:
+                stato#forward:
                     isForward := TRUE;
                     isBackward := FALSE;
-                tipi.stato#backward:
+                stato#backward:
                     isForward := FALSE;
                     isBackward := TRUE;
-                tipi.stato#stop:
+                stato#stop:
                     isForward := FALSE;
                     isBackward := FALSE;
             END_CASE;
+
         END_METHOD
 
-        METHOD PUBLIC fotocellula 
-            //check if is isEmpty from sensor
+        METHOD PUBLIC fotocellula  //check if is isEmpty from sensor
                 isEmpty := TRUE;
         END_METHOD
 
-        METHOD PUBLIC GetStatus 
-            // ottieni stato del nastro
+        METHOD PUBLIC GetStatus // get state of the conveyor
             actualState:=actualState;
-            END_METHOD
+        END_METHOD
     END_CLASS
 
 END_NAMESPACE
