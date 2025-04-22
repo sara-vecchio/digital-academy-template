@@ -9,4 +9,6 @@ PROGRAM MainProgram
     END_VAR
     ;
     ;
+    ; //prova modifica ale
+
 END_PROGRAM
