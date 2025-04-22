@@ -10,12 +10,13 @@ targets:
   - llvm
 
 catalogs:
-  "@ax/simatic-ax": ^2411.1.0
+  "@ax/simatic-ax": 2411.1.0
 # Dependencies
 devDependencies:
   "@ax/sdk": 2411.1.0
-  #dependencies:
-  #"@ax/simatic-1500-tasks": 7.0.6
+dependencies:
+  "@ax/simatic-1500-tasks": 7.0.6
+  "@ax/system-timer": 8.0.7
   #"@ax/system-timer": 8.0.7
   #"@ax/system-edgedetection": 8.0.7  
   #"@ax/opcua-server-config": 2.0.0
@@ -42,6 +43,15 @@ variables:
   # The name should be specified before creating the plc security file, as the files are assigned using the plc name.
   PLC_Name: "PLC_DigitalAcademy"
   HW_DECLARATION: "hw/hardware-digital-academy.hwl.yml"
+
+registries:
+  '@simatic-ax': 'https://npm.pkg.github.com/' 
+  '@sara-vecchio': 'https://npm.pkg.github.com/' 
+  '@coppiardielia': 'https://npm.pkg.github.com/' 
+  '@benniredds': 'https://npm.pkg.github.com/' # non pubblico?
+  '@aledognini': 'https://npm.pkg.github.com/' # non pubblico?
+  #'@fede-con': 'https://npm.pkg.github.com/' # non pubblico?
+  '@plzpla': 'https://npm.pkg.github.com/'
 
 scripts:
   ############### Inital runs for PLC / PLC Name changes ###########################
@@ -106,3 +116,4 @@ scripts:
   #monitor: apax mon --targetIP $IP_ADDRESS --certificate $TLS_CONNECT_CERTFILE --file ./test/mon/watchtable.mon --continuously
   #loginaxwithoutbrowser: apax login --registry https://registry.simatic-ax.siemens.io --password 
   #updatecatalog: apax update --catalog @ax/simatic-ax
+  logingithub: apax login --registry https://npm.pkg.github.com/ --password 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
