@@ -8,4 +8,5 @@ PROGRAM MainProgram
     VAR_TEMP
     END_VAR
     ;
+    ;
 END_PROGRAM
