@@ -10,4 +10,7 @@ PROGRAM MainProgram
     VAR_TEMP
     END_VAR
     ;
+    ;
+    ; //prova modifica ale
+
 END_PROGRAM
