@@ -8,9 +8,7 @@
     "version": "0.0.1",
     "dependencies": {
       "@ax/simatic-1500-tasks": "7.0.6",
-      "@ax/system-timer": "8.0.7"
-    },
-    "devDependencies": {
+      "@ax/system-timer": "8.0.7",
       "@ax/sdk": "2411.1.0"
     },
     "catalogs": {
@@ -18,6 +16,22 @@
     }
   },
   "packages": {
+    "@ax/simatic-1500-tasks": {
+      "name": "@ax/simatic-1500-tasks",
+      "version": "7.0.6",
+      "integrity": "sha512-oZj7uoC0xQpLVcx3dyNKkDCLL2oLWRbhK4XCqnr2IQbHdz0+8vCm1CjvALb9Gt9vwBxIud5vKOtoRzFNiYJApQ==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/simatic-1500-tasks/-/simatic-1500-tasks-7.0.6.tgz",
+      "dependencies": {
+        "@ax/system-datetime": "^8.0.7"
+      }
+    },
+    "@ax/system-timer": {
+      "name": "@ax/system-timer",
+      "version": "8.0.7",
+      "integrity": "sha512-V8iqkWqFFWur7A/yWEWyTAIBOpsIvHOXUokFYy36qUgGe8JPQQ5brzo+hPQfxGdtNmnwQwyeeadMe/J/U87KDQ==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-timer/-/system-timer-8.0.7.tgz",
+      "dependencies": {}
+    },
     "@ax/sdk": {
       "name": "@ax/sdk",
       "version": "2411.1.0",
@@ -48,20 +62,11 @@
         "@ax/trace": "2.8.1"
       }
     },
-    "@ax/simatic-1500-tasks": {
-      "name": "@ax/simatic-1500-tasks",
-      "version": "7.0.6",
-      "integrity": "sha512-oZj7uoC0xQpLVcx3dyNKkDCLL2oLWRbhK4XCqnr2IQbHdz0+8vCm1CjvALb9Gt9vwBxIud5vKOtoRzFNiYJApQ==",
-      "resolved": "https://registry.simatic-ax.siemens.io/@ax/simatic-1500-tasks/-/simatic-1500-tasks-7.0.6.tgz",
-      "dependencies": {
-        "@ax/system-datetime": "^8.0.7"
-      }
-    },
-    "@ax/system-timer": {
-      "name": "@ax/system-timer",
+    "@ax/system-datetime": {
+      "name": "@ax/system-datetime",
       "version": "8.0.7",
-      "integrity": "sha512-V8iqkWqFFWur7A/yWEWyTAIBOpsIvHOXUokFYy36qUgGe8JPQQ5brzo+hPQfxGdtNmnwQwyeeadMe/J/U87KDQ==",
-      "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-timer/-/system-timer-8.0.7.tgz",
+      "integrity": "sha512-tidKSDNTNcCpjebJoO1w57bdCPcwz09KtgUBSsjDjV7w+iMvzVETiwOkurKX9ExpAZR5QMTLPMABOo+8AzwqiA==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-datetime/-/system-datetime-8.0.7.tgz",
       "dependencies": {}
     },
     "@ax/apax-build": {
@@ -267,13 +272,6 @@
         "@ax/trace-win-x64": "2.8.1",
         "@ax/trace-linux-x64": "2.8.1"
       }
-    },
-    "@ax/system-datetime": {
-      "name": "@ax/system-datetime",
-      "version": "8.0.7",
-      "integrity": "sha512-tidKSDNTNcCpjebJoO1w57bdCPcwz09KtgUBSsjDjV7w+iMvzVETiwOkurKX9ExpAZR5QMTLPMABOo+8AzwqiA==",
-      "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-datetime/-/system-datetime-8.0.7.tgz",
-      "dependencies": {}
     },
     "@ax/axunitst-library": {
       "name": "@ax/axunitst-library",

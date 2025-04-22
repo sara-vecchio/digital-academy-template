@@ -11,12 +11,11 @@ targets:
 
 catalogs:
   "@ax/simatic-ax": 2411.1.0
-# Dependencies
-devDependencies:
-  "@ax/sdk": 2411.1.0
+  
 dependencies:
   "@ax/simatic-1500-tasks": 7.0.6
   "@ax/system-timer": 8.0.7
+  "@ax/sdk": 2411.1.0
   #"@ax/system-timer": 8.0.7
   #"@ax/system-edgedetection": 8.0.7  
   #"@ax/opcua-server-config": 2.0.0
@@ -45,9 +44,9 @@ variables:
   HW_DECLARATION: "hw/hardware-digital-academy.hwl.yml"
 
 registries:
-  '@simatic-ax': 'https://npm.pkg.github.com/' 
-  '@sara-vecchio': 'https://npm.pkg.github.com/' 
-  '@coppiardielia': 'https://npm.pkg.github.com/' 
+  '@simatic-ax': 'https://npm.pkg.github.com/'
+  '@sara-vecchio': 'https://npm.pkg.github.com/'
+  '@coppiardielia': 'https://npm.pkg.github.com/'
   '@benniredds': 'https://npm.pkg.github.com/' # non pubblico?
   '@aledognini': 'https://npm.pkg.github.com/' # non pubblico?
   #'@fede-con': 'https://npm.pkg.github.com/' # non pubblico?
