@@ -48,9 +48,9 @@ registries:
   '@simatic-ax': 'https://npm.pkg.github.com/'
   '@sara-vecchio': 'https://npm.pkg.github.com/'
   '@coppiardielia': 'https://npm.pkg.github.com/'
-  '@benniredds': 'https://npm.pkg.github.com/' # non pubblico?
+  #'@benniredds': 'https://npm.pkg.github.com/' # non pubblico?
   '@aledognini': 'https://npm.pkg.github.com/' # non pubblico?
-  #'@fede-con': 'https://npm.pkg.github.com/' # non pubblico?
+  '@fede-con': 'https://npm.pkg.github.com/' # non pubblico?
   '@plzpla': 'https://npm.pkg.github.com/'
 
 scripts:
