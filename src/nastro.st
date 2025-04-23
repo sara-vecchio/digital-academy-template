@@ -4,7 +4,7 @@ NAMESPACE Libreria
     
     CLASS nastro
 
-        VAR 
+        VAR PUBLIC
             ID:INT;
             isEmpty: BOOL;
             actualState : stato;
@@ -12,17 +12,23 @@ NAMESPACE Libreria
             CntrlBackward : BOOL;   // Comando indietro
             isForward : BOOL;    // Uscita avanti
             isBackward : BOOL;   // Uscita indietro
+            i:INT;
         END_VAR
         
-        METHOD Init  // Init motor
+        METHOD PUBLIC Init  // Init motor
+            VAR_INPUT
+                IDinit : INT;
+            END_VAR
+            ID:=IDinit;
             actualState := stato#stop;
             CntrlForward := FALSE;
             CntrlBackward := FALSE;
             isForward := FALSE;
             isBackward := FALSE;
+
         END_METHOD
         
-        METHOD Update
+        METHOD PUBLIC Update
             
             IF CntrlForward AND NOT CntrlBackward THEN
                 actualState := stato#forward;
