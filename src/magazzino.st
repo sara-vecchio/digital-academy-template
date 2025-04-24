@@ -2,18 +2,21 @@ USING Tipi;
 
 NAMESPACE Libreria
     
-    CLASS nastro
+    CLASS magazzino
 
         VAR PUBLIC
             ID:INT;
-            isEmpty: BOOL;
+            isFull: BOOL;
+            colore : colore;
+            i:INT;
+            spazio:INT;
+            sensore:BOOL;
             actualState : stato;
             CntrlForward : BOOL;    // Comando avanti
             CntrlBackward : BOOL;   // Comando indietro
             isForward : BOOL;    // Uscita avanti
             isBackward : BOOL;   // Uscita indietro
-            i:INT;
-            colore: colore;
+            
         END_VAR
         
         METHOD PUBLIC Init  // Init motor
@@ -21,6 +24,7 @@ NAMESPACE Libreria
                 IDinit : INT;
             END_VAR
             ID:=IDinit;
+            colore := colore;
             actualState := stato#stop;
             CntrlForward := FALSE;
             CntrlBackward := FALSE;
@@ -28,7 +32,7 @@ NAMESPACE Libreria
             isBackward := FALSE;
 
         END_METHOD
-        
+    
         METHOD PUBLIC Update
             
             IF CntrlForward AND NOT CntrlBackward THEN
@@ -50,16 +54,8 @@ NAMESPACE Libreria
                     isForward := FALSE;
                     isBackward := FALSE;
             END_CASE;
+            END_METHOD
 
-        END_METHOD
-
-        METHOD PUBLIC fotocellula  //check if is isEmpty from sensor
-                isEmpty := TRUE;
-        END_METHOD
-
-        METHOD PUBLIC GetStatus // get state of the conveyor
-            actualState:=actualState;
-        END_METHOD
     END_CLASS
 
 END_NAMESPACE
