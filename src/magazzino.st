@@ -10,7 +10,7 @@ NAMESPACE Libreria
             colore : colore;
             i:INT;
             spazio:INT;
-            sensore:BOOL;
+            fotocellula:BOOL;
             actualState : stato;
             CntrlForward : BOOL;    // Comando avanti
             CntrlBackward : BOOL;   // Comando indietro
@@ -22,9 +22,10 @@ NAMESPACE Libreria
         METHOD PUBLIC Init  // Init motor
             VAR_INPUT
                 IDinit : INT;
+                Color : colore;
             END_VAR
             ID:=IDinit;
-            colore := colore;
+            colore := color;
             actualState := stato#stop;
             CntrlForward := FALSE;
             CntrlBackward := FALSE;

@@ -9,7 +9,8 @@ NAMESPACE Libreria
             isEmpty: BOOL;
             colore : colore;
             i:INT;
-            sensore:BOOL;
+            sensore_presenza:BOOL;
+            smista:BOOL;
         END_VAR
         
         METHOD PUBLIC Init  // Init motor
@@ -17,8 +18,20 @@ NAMESPACE Libreria
                 IDinit : INT;
             END_VAR
             ID:=IDinit;
-            sensore:=FALSE;
+            sensore_presenza:=FALSE;
             colore := colore;
+
+        END_METHOD
+
+        METHOD PUBLIC devia // Init motor
+
+            ID:=ID;
+
+        END_METHOD 
+
+        METHOD PUBLIC check // Init motor
+
+            ID:=ID;
 
         END_METHOD
     

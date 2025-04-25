@@ -1,71 +1,84 @@
 USING tipi;
 USING Libreria;
-USING Siemens.Simatic.S71500;
 
 PROGRAM MainProgram
 
     VAR
-        n_mag:INT:=3;// numero magazzini colore
+        tStopMotor : INT:=5;//tempo movimento motori
+        n_pacchi :INT:=10;
+        n_mag : INT:=3;// numero magazzini
+
         nastri : ARRAY[1..3] OF nastro;
         deviatori : ARRAY[1..3] OF deviatore;
         magazzini : ARRAY[1..3+1] OF magazzino;
-        tStopMotor : INT;//tempo movimento
-        n_pacchi :INT;
+
+        fineProcesso: BOOL := FALSE;
+        tempotrascorso: BOOL := FALSE;
+        flag : BOOL:=FALSE;
     END_VAR
 
     VAR_TEMP
         i:INT;
     END_VAR
 
-    FOR i:=1 TO n_mag DO //initialize components
-        nastri[i].Init(i);   
+    FOR i:=1 TO n_mag DO //inizializzare componenti
+        nastri[i].Init(i);
         deviatori[i].Init(i);
         magazzini[i].Init(i); 
     END_FOR;
 
-    i:=i+1;
-    magazzini[i].Init(i);
+    magazzini[n_mag+1].Init(n_mag+1);
     
-    IF n_pacchi>0 THEN //se ci sono pacchi la fotocellula del primo nastro lo riconosce
-        nastri[1].isEmpty:=FALSE;
+    IF not(n_pacchi>0) THEN //se non ci sono pacchi fine smistamento
+        fineProcesso:= TRUE;
     END_IF;
 
-    WHILE nastri[1].isEmpty = FALSE AND n_pacchi>=0 DO //finche ci sono pacchi
+    WHILE NOT(fineProcesso) DO //finche ci sono pacchi da smistare 
         i:=1;
+        Flag := FALSE;
+
+        IF n_pacchi = 0 THEN
+            fineProcesso := TRUE;
+        END_IF;
+
         WHILE i<n_mag+1 DO
-            nastri[i].CntrlForward := TRUE;//movimento avanti
+
+            nastri[i].CntrlForward := TRUE;//movimento avanti motore nastro
+            nastri[i].isEmpty := FALSE;// fotocellula con pacchi
             nastri[i].Update();//aggiorna stato nastro
+            
+            if i>1 THEN
+                deviatori[i-1].sensore_presenza := FALSE; //spegni il sensore del deviatore precedente
+            END_IF;
+            
+            tempotrascorso := Timer(tStopMotor);
+            deviatori[i].sensore_presenza := TRUE;//il deviatore vede un pacco
+            deviatori[i].smista:=TRUE;// controllato se il pacco è da smistare
     
-            //implementare un timer che conta fino a 5s
-            tStopMotor:=0;
-            WHILE tStopMotor<5 DO
-                tStopMotor := tStopMotor + 1;
-                deviatori[i].sensore := TRUE;
-            END_WHILE;
-    
-            IF tStopMotor >= 5 AND deviatori[i].sensore = TRUE THEN // controlla se il sensore vede il pacco
+            IF tempotrascorso AND deviatori[i].sensore_presenza THEN // controlla se il sensore vede il pacco dopo il movimento del motore
                 nastri[i].CntrlForward := FALSE;//spegni motore
                 nastri[i].update();//aggiorna stato nastro
 
-                IF magazzini[i].isFull = FALSE AND deviatori[i].colore = nastri[i].colore THEN //controlla che il magazzino sia libero, il colore del pacco corrisponde con il colore del magazzino
-                    magazzini[i].CntrlForward :=TRUE;//attiva motore magazzino
+                IF NOT(magazzini[i].isFull) AND deviatori[i].smista THEN //controlla che il magazzino sia libero, il colore del pacco corrisponde con il colore del magazzino
+                    deviatori[i].devia();// devia il pacco
+                    magazzini[i].CntrlForward := TRUE;//attiva motore magazzino
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    
-                    //implementare un timer che conta fino a 5s
-                    tStopMotor:=0;
-                    WHILE tStopMotor<5 DO
-                        tStopMotor := tStopMotor + 1;
-                    END_WHILE;
+                    nastri[i].isEmpty := TRUE;//spegne la fotocellula nastro 
+                    deviatori[i].sensore_presenza := FALSE;// spegne sensore presenza pacco
+                    magazzini[i].fotocellula := TRUE;// la fotocellula del magazzino vede il pacco
+                
+                    tempotrascorso := Timer(tStopMotor);
+                    magazzini[i].fotocellula := FALSE;// la fotocellula non vede più il pacco che è entrato a magazzino
 
-                    magazzini[i].spazio := magazzini[i].spazio - 1;
+                    n_pacchi := n_pacchi-1; //il numero di pacchi cala
+                    magazzini[i].spazio := magazzini[i].spazio - 1; //lo spazio del magazzino cala
 
-                    IF magazzini[i].spazio = 0 THEN
-
+                    IF magazzini[i].spazio = 0 THEN//se non c'è più spazio il magazzino diventa pieno
                         magazzini[i].isFull:=TRUE;
-
                     END_IF;
                     
-                    i:=n_mag+1;
+                    flag:=TRUE;// flag per segnare che i pacchi sono già stati ridotti
+                    i:=n_mag;
 
                 END_IF;
 
@@ -75,29 +88,16 @@ PROGRAM MainProgram
         
         END_WHILE;
 
-        n_pacchi:=n_pacchi-1;
-
-        IF i=n_mag+1 THEN
-        
-            magazzini[i].spazio := magazzini[i].spazio - 1;
-            
-            IF magazzini[i].spazio = 0 THEN
-
-            magazzini[i].isFull:=TRUE;
-
-            n_pacchi := -1; //esci dal ciclo perche pieno
-
+        IF i=n_mag+1 AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
+            n_pacchi:= n_pacchi-1; //il numero di pacchi cala
+            magazzini[n_mag+1].spazio := magazzini[n_mag].spazio - 1;  //lo spazio del magazzino scarto finale cala
+            IF magazzini[n_mag+1].spazio = -1 THEN // se lo spazio del magazzino finale da 0 passa a -1 significa che vogliamo forzare un pacco che non è stato smistato nel magazzino finale pieno 
+                fineProcesso := TRUE; //esci dal ciclo perche non posso più carica
             END_IF;
-
-        END_IF;
-        
-
-        IF n_pacchi = 0 THEN
-            nastri[1].isEmpty:=TRUE;
         END_IF;
 
     END_WHILE;
 
-    //smistamento completato o non possibile
+    //smistamento completato 
 
 END_PROGRAM

@@ -19,8 +19,10 @@ NAMESPACE Libreria
         METHOD PUBLIC Init  // Init motor
             VAR_INPUT
                 IDinit : INT;
+                Color : colore;
             END_VAR
             ID:=IDinit;
+            colore := color;
             actualState := stato#stop;
             CntrlForward := FALSE;
             CntrlBackward := FALSE;
