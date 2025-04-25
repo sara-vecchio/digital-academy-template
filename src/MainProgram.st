@@ -48,7 +48,7 @@ PROGRAM MainProgram
             nastri[i].Update();//aggiorna stato nastro
             
             if i>1 THEN
-                deviatori[i-1].sensore_presenza := FALSE; //spegni il sensore del deviatore precedente
+                deviatori[i-1].sensore_presenza := FALSE; //spegni il sensore del deviatore precendente
             END_IF;
             
             tempotrascorso := Timer(tStopMotor);
