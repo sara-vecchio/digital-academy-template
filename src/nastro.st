@@ -12,7 +12,7 @@ NAMESPACE Libreria
             CntrlBackward : BOOL;   // Comando indietro
             isForward : BOOL;    // Uscita avanti //necessario?
             isBackward : BOOL;   // Uscita indietro //necessario?
-            i:INT;
+            isEmpty:BOOL;
             colore: colore;
         END_VAR
         
@@ -61,7 +61,7 @@ NAMESPACE Libreria
 
         
         
-        METHOD PUBLIC isEmpty: BOOL  //check if is isEmpty from sensor
+        METHOD PUBLIC CheckEmpty: BOOL  //check if is isEmpty from sensor
             VAR_INPUT
                 bLightSensor: BOOL;
             END_VAR

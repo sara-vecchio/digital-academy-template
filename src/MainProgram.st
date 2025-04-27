@@ -14,7 +14,8 @@ PROGRAM MainProgram
 
         fineProcesso: BOOL := FALSE;
         tempotrascorso: BOOL := FALSE;
-        flag : BOOL:=FALSE;
+        flag : BOOL := FALSE;
+
     END_VAR
 
     VAR_TEMP
@@ -44,27 +45,28 @@ PROGRAM MainProgram
         WHILE i<n_mag+1 DO
 
             nastri[i].CntrlForward := TRUE;//movimento avanti motore nastro
-            nastri[i].isEmpty() := FALSE;// fotocellula con pacchi
+            nastri[i].CheckEmpty();// fotocellula con pacchi
             nastri[i].Update();//aggiorna stato nastro
             
             if i>1 THEN
-                deviatori[i-1].sensore_presenza := FALSE; //spegni il sensore del deviatore precendente
+                deviatori[i-1].sensore := FALSE; //spegni il sensore del deviatore precendente
             END_IF;
             
             tempotrascorso := Timer(tStopMotor);
-            deviatori[i].sensore_presenza := TRUE;//il deviatore vede un pacco
-            deviatori[i].smista:=TRUE;// controllato se il pacco è da smistare
+            deviatori[i].sensore := TRUE;//il deviatore vede un pacco
+            //inserire check chiudi deviatore
+            deviatori[i].ChiudiDeviatore();// controllato se il pacco è da smistare
     
-            IF tempotrascorso AND deviatori[i].sensore_presenza THEN // controlla se il sensore vede il pacco dopo il movimento del motore
+            IF tempotrascorso AND deviatori[i].sensore THEN // controlla se il sensore vede il pacco dopo il movimento del motore
                 nastri[i].CntrlForward := FALSE;//spegni motore
                 nastri[i].update();//aggiorna stato nastro
 
-                IF NOT(magazzini[i].isFull) AND deviatori[i].smista THEN //controlla che il magazzino sia libero, il colore del pacco corrisponde con il colore del magazzino
-                    deviatori[i].devia();// devia il pacco
+                IF NOT(magazzini[i].isFull) AND deviatori[i].chiuso THEN //controlla che il magazzino sia libero, il colore del pacco corrisponde con il colore del magazzino
+                    deviatori[i].ChiudiDeviatore();// devia il pacco
                     magazzini[i].CntrlForward := TRUE;//attiva motore magazzino
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    nastri[i].isEmpty() := TRUE;//spegne la fotocellula nastro 
-                    deviatori[i].sensore_presenza := FALSE;// spegne sensore presenza pacco
+                    nastri[i].isEmpty := TRUE;//spegne la fotocellula nastro 
+                    deviatori[i].sensore := FALSE;// spegne sensore presenza pacco
                     magazzini[i].fotocellula := TRUE;// la fotocellula del magazzino vede il pacco
                 
                     tempotrascorso := Timer(tStopMotor);

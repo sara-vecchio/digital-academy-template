@@ -23,14 +23,16 @@ NAMESPACE Libreria
             cntrlChiudi := FALSE; // all'inizio non ci sono comandi di apertura o chiusura
         END_METHOD
 
-        METHOD PUBLIC ChiudiDeviatore // nel main se (sensore = TRUE) vogliamo chiudere il deviatore
+        METHOD PUBLIC ChiudiDeviatore : BOOL // nel main se (sensore = TRUE) vogliamo chiudere il deviatore
             cntrlChiudi := TRUE;
             cntrlApri := FALSE;
+            chiuso:= TRUE;
         END_METHOD // NB ci pensa test.st a definire (chiuso := TRUE)
 
-        METHOD PUBLIC ApriDeviatore // una volta deviato il pacco nel mai (sensore = FALSE) vogliamo aprire il deviatore
+        METHOD PUBLIC ApriDeviatore : BOOL // una volta deviato il pacco nel mai (sensore = FALSE) vogliamo aprire il deviatore
             cntrlApri := TRUE;
             cntrlChiudi := FALSE;
+            chiuso := FALSE;
         END_METHOD // NB ci pensa test.st a definire (chiuso := FALSE)
     
 
