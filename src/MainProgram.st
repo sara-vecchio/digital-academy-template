@@ -44,7 +44,7 @@ PROGRAM MainProgram
         WHILE i<n_mag+1 DO
 
             nastri[i].CntrlForward := TRUE;//movimento avanti motore nastro
-            nastri[i].isEmpty := FALSE;// fotocellula con pacchi
+            nastri[i].isEmpty() := FALSE;// fotocellula con pacchi
             nastri[i].Update();//aggiorna stato nastro
             
             if i>1 THEN
@@ -63,7 +63,7 @@ PROGRAM MainProgram
                     deviatori[i].devia();// devia il pacco
                     magazzini[i].CntrlForward := TRUE;//attiva motore magazzino
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    nastri[i].isEmpty := TRUE;//spegne la fotocellula nastro 
+                    nastri[i].isEmpty() := TRUE;//spegne la fotocellula nastro 
                     deviatori[i].sensore_presenza := FALSE;// spegne sensore presenza pacco
                     magazzini[i].fotocellula := TRUE;// la fotocellula del magazzino vede il pacco
                 
