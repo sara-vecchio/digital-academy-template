@@ -5,35 +5,33 @@ NAMESPACE Libreria
     CLASS deviatore
 
         VAR PUBLIC
-            ID:INT;
-            isEmpty: BOOL;
-            colore : colore;
-            i:INT;
-            sensore_presenza:BOOL;
-            smista:BOOL;
+            ID :INT;
+            sensore : BOOL; // il sensore del deviatore del magazzino rosso si attiva se vede un pacco rosso
+            cntrlApri : BOOL; // segnale per aprire il deviatore (se è aperto lascia passare i pacchi)   
+            cntrlChiudi : BOOL; // segnale per chiudere il deviatore (se è chiuso devia i pacchi)
+            chiuso : BOOL; 
         END_VAR
         
-        METHOD PUBLIC Init  // Init motor
+        METHOD PUBLIC Init // inizializzazione del deviatore
             VAR_INPUT
                 IDinit : INT;
             END_VAR
             ID:=IDinit;
-            sensore_presenza:=FALSE;
-            colore := colore;
-
+            sensore := FALSE; // all'inizio non vede il pacco
+            chiuso := FALSE; // all'inizio il deviatore è aperto
+            cntrlApri := FALSE; 
+            cntrlChiudi := FALSE; // all'inizio non ci sono comandi di apertura o chiusura
         END_METHOD
 
-        METHOD PUBLIC devia // Init motor
+        METHOD PUBLIC ChiudiDeviatore // nel main se (sensore = TRUE) vogliamo chiudere il deviatore
+            cntrlChiudi := TRUE;
+            cntrlApri := FALSE;
+        END_METHOD // NB ci pensa test.st a definire (chiuso := TRUE)
 
-            ID:=ID;
-
-        END_METHOD 
-
-        METHOD PUBLIC check // Init motor
-
-            ID:=ID;
-
-        END_METHOD
+        METHOD PUBLIC ApriDeviatore // una volta deviato il pacco nel mai (sensore = FALSE) vogliamo aprire il deviatore
+            cntrlApri := TRUE;
+            cntrlChiudi := FALSE;
+        END_METHOD // NB ci pensa test.st a definire (chiuso := FALSE)
     
 
     END_CLASS
