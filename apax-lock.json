@@ -9,7 +9,8 @@
     "dependencies": {
       "@ax/simatic-1500-tasks": "7.0.6",
       "@ax/system-timer": "8.0.7",
-      "@ax/sdk": "2411.1.0"
+      "@ax/sdk": "2411.1.0",
+      "@sara-vecchio/hello-world-ax": "^0.1.5"
     },
     "catalogs": {
       "@ax/simatic-ax": "2411.1.0"
@@ -61,6 +62,13 @@
         "@ax/target-mc7plus": "8.0.31",
         "@ax/trace": "2.8.1"
       }
+    },
+    "@sara-vecchio/hello-world-ax": {
+      "name": "@sara-vecchio/hello-world-ax",
+      "version": "0.1.5",
+      "integrity": "sha512-9ELUmak9CYmsP1gO/n21zYZ29pRe8RNymetqYgd3XJsb9vxF4cGBgXStZb8sej25VBR0IzzOZ4zKYYp13KIXNA==",
+      "resolved": "https://npm.pkg.github.com/download/@sara-vecchio/hello-world-ax/0.1.5/d771210e2990933d7a619356919cc22e2ed39732",
+      "dependencies": {}
     },
     "@ax/system-datetime": {
       "name": "@ax/system-datetime",
