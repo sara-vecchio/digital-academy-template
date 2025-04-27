@@ -5,7 +5,7 @@ NAMESPACE tipi
 
     TYPE
         colore : USINT (
-            Undefined := USINT#0,
+            Undefined := USINT#0, // il pacco va nel magazzino "scarto feed"
             Red       := USINT#1,
             Orange    := USINT#2,
             Yellow    := USINT#3,
@@ -14,6 +14,10 @@ NAMESPACE tipi
             Indigo    := USINT#6,
             Violet    := USINT#7
         ) := Undefined;
+    END_TYPE
+
+    TYPE InventoryMode: 
+        (Fill, Empty);
     END_TYPE
 
 END_NAMESPACE
