@@ -1,8 +1,9 @@
-USING Tipi;
+USING tipi;
+USING MotorClass //preso da libreria di @sara_vecchio
 
-NAMESPACE Libreria
+NAMESPACE NastroClass
     
-    CLASS nastro
+    CLASS Nastro
 
         VAR PUBLIC
             ID:INT;
@@ -10,13 +11,13 @@ NAMESPACE Libreria
             actualState : stato;
             CntrlForward : BOOL;    // Comando avanti
             CntrlBackward : BOOL;   // Comando indietro
-            isForward : BOOL;    // Uscita avanti
-            isBackward : BOOL;   // Uscita indietro
+            //isForward : BOOL;    // Uscita avanti //necessario?
+            //isBackward : BOOL;   // Uscita indietro //necessario?
             i:INT;
             colore: colore;
         END_VAR
         
-        METHOD PUBLIC Init  // Init motor
+        METHOD PUBLIC Init  // Initialization motor
             VAR_INPUT
                 IDinit : INT;
                 Color : colore;
@@ -55,13 +56,46 @@ NAMESPACE Libreria
 
         END_METHOD
 
-        METHOD PUBLIC fotocellula  //check if is isEmpty from sensor
+        METHOD PUBLIC isEmpty: BOOL  //check if is isEmpty from sensor
+            VAR_INPUT
+                bLightSensor: BOOL;
+            END_VAR
+            IF bLightSensor THEN
+                isEmpty := FALSE;
+                ELSIF
                 isEmpty := TRUE;
+            END_IF;
+
         END_METHOD
 
-        METHOD PUBLIC GetStatus // get state of the conveyor
-            actualState:=actualState;
+        METHOD PUBLIC GetStatus : tipi.stato // get state of the conveyor
+            GetStatus := actualState;
         END_METHOD
+    
+        METHOD PUBLIC Stop //serve chiamare anche il motore?
+            Motor.Stop := TRUE;
+            actualState := stato#stop;
+        END_METHOD
+
+        METHOD PUBLIC RunForward //serve chiamare anche i motori?
+            IF actualState =! stato#error THEN
+                Motor.Start := TRUE;
+                CntrlForward := TRUE; //aggiungi sicura per eviatre che avanti e indietro possano essere attivati contemporaneamente
+                actualState := stato#forward;
+            END_IF;
+        END_METHOD
+
+        METHOD PUBLIC RunBackward 
+            IF actualState =! stato#error THEN
+                Motor.Start := TRUE;
+                CntrlBackward : TRUE; //aggiungi stessa sicura di sopra
+                actualState := stato#backward;
+            END_IF;
+        END_METHOD
+    
+    
+    
     END_CLASS
+
 
 END_NAMESPACE
