@@ -16,7 +16,8 @@ dependencies:
   "@ax/simatic-1500-tasks": 7.0.6
   "@ax/system-timer": 8.0.7
   "@ax/sdk": 2411.1.0
-  "@sara-vecchio/hello-world-ax": ^0.1.5
+  "@ax/simatic-1500-clocks": 8.0.8 
+  #"@sara-vecchio/hello-world-ax": ^0.1.5
   #"@ax/system-timer": 8.0.7
   #"@ax/system-edgedetection": 8.0.7  
   #"@ax/opcua-server-config": 2.0.0
