@@ -7,9 +7,8 @@ PROGRAM MainProgram
     VAR_external
         nastri : ARRAY [1..3] OF Libreria.nastro;
         deviatori : ARRAY [1..3] OF Libreria.deviatore;
-        magazzini : ARRAY [1..4] OF Libreria.magazzino;
-        Tag1 : INT;
-        Tag3 : BYTE;
+        magazzini : ARRAY [1..4] OF Libreria.inventory;
+
     END_VAR
 
     VAR_external
@@ -17,27 +16,26 @@ PROGRAM MainProgram
         Qdf : BOOL;
         Qts : BOOL;
         Iff : BOOL;
-        Idf : BOOL;
+        Idf : USINT;
         Isf : BOOL;
         Imf : BOOL;
         Qnn : BOOL;
         Qdn : BOOL;
         Qtn : BOOL;
         Ifn : BOOL;
-        Idn : BOOL;
+        Idn : USINT;
         Isn : BOOL;
         Imn : BOOL;
         Qnc : BOOL;
         Qdc : BOOL;
         Qtr : BOOL;
         Ifc : BOOL;
-        Idc : BOOL;
+        Idc : USINT;
         Isc : BOOL;
         Ifr : BOOL;
     END_VAR
     
     VAR
-        tStopMotor : INT:=5;//tempo movimento motori
         n_pacchi :INT:=10;
         fineProcesso: BOOL := FALSE;
         tempotrascorso: BOOL := FALSE;
@@ -46,14 +44,14 @@ PROGRAM MainProgram
     END_VAR
 
     VAR CONSTANT
-        n_mag:int:=3;
+        n_mag: int :=3;
     END_VAR
 
     VAR_TEMP
         i:INT;
     END_VAR
     
-    IF not(n_pacchi>0) THEN //se non ci sono pacchi fine smistamento
+    IF n_pacchi<=0 THEN //se non ci sono pacchi fine smistamento
         fineProcesso:= TRUE;
     END_IF;
 
@@ -66,43 +64,43 @@ PROGRAM MainProgram
         END_IF;
 
         WHILE i<n_mag+1 DO
-
-            nastri[i].CntrlForward := TRUE;//movimento avanti motore nastro
-            nastri[i].CheckEmpty();// fotocellula con pacchi
-            nastri[i].Update();//aggiorna stato nastro
             
-            if i>1 THEN
-                deviatori[i-1].sensore := FALSE; //spegni il sensore del deviatore precendente
+            //simulazione accendi il sensore fotocellula
+
+            Qnf := nastri[i].RunForward();
+            nastri[i].isEmpty := nastri[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
+            nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
+            Simulazione(); 
+            
+            IF Isf THEN
+            Qnf := nastri[i].Stop();
+            nastri[i].isEmpty := nastri[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
+            nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
-            tempotrascorso := Timer(tStopMotor);
-            deviatori[i].sensore := TRUE;//il deviatore vede un pacco
-            //inserire check chiudi deviatore
-            deviatori[i].ChiudiDeviatore();// controllato se il pacco è da smistare
-    
-            IF tempotrascorso AND deviatori[i].sensore THEN // controlla se il sensore vede il pacco dopo il movimento del motore
-                nastri[i].CntrlForward := FALSE;//spegni motore
-                nastri[i].update();//aggiorna stato nastro
-
-                IF NOT(magazzini[i].isFull) AND deviatori[i].chiuso THEN //controlla che il magazzino sia libero, il colore del pacco corrisponde con il colore del magazzino
-                    deviatori[i].ChiudiDeviatore();// devia il pacco
+            IF deviatori[i].IsMycolor(Idf) THEN // controllato se il pacco è da smistare
+                
+                IF magazzini[i].StockisFull THEN
+                    deviatori[i].Discard();
+                END_IF;
+                
+                IF NOT(magazzini[i].StockisFull) THEN
+                    deviatori[i].Accept();
+                    /*implementare nastro in inventory
                     magazzini[i].CntrlForward := TRUE;//attiva motore magazzino
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
                     nastri[i].isEmpty := TRUE;//spegne la fotocellula nastro 
-                    deviatori[i].sensore := FALSE;// spegne sensore presenza pacco
-                    magazzini[i].fotocellula := TRUE;// la fotocellula del magazzino vede il pacco
-                
-                    tempotrascorso := Timer(tStopMotor);
-                    magazzini[i].fotocellula := FALSE;// la fotocellula non vede più il pacco che è entrato a magazzino
+                    Simulazione()*/
 
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
-                    magazzini[i].spazio := magazzini[i].spazio - 1; //lo spazio del magazzino cala
+                    magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel(); //lo spazio del magazzino cala
 
-                    IF magazzini[i].spazio = 0 THEN//se non c'è più spazio il magazzino diventa pieno
-                        magazzini[i].isFull:=TRUE;
+                    IF magazzini[i].currentStockLevel = 0 THEN//se non c'è più spazio il magazzino diventa pieno
+                        magazzini[i].isFull();
                     END_IF;
                     
                     flag:=TRUE;// flag per segnare che i pacchi sono già stati ridotti
+                    
                     i:=n_mag;
 
                 END_IF;
@@ -115,8 +113,8 @@ PROGRAM MainProgram
 
         IF i=n_mag+1 AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
             n_pacchi:= n_pacchi-1; //il numero di pacchi cala
-            magazzini[n_mag+1].spazio := magazzini[n_mag].spazio - 1;  //lo spazio del magazzino scarto finale cala
-            IF magazzini[n_mag+1].spazio = -1 THEN // se lo spazio del magazzino finale da 0 passa a -1 significa che vogliamo forzare un pacco che non è stato smistato nel magazzino finale pieno 
+            magazzini[n_mag+1].currentStockLevel := magazzini[n_mag+1].GetCurrentStockLevel();  //lo spazio del magazzino scarto finale cala
+            IF magazzini[n_mag+1].currentStockLevel = -1 THEN // se lo spazio del magazzino finale da 0 passa a -1 significa che vogliamo forzare un pacco che non è stato smistato nel magazzino finale pieno 
                 fineProcesso := TRUE; //esci dal ciclo perche non posso più carica
             END_IF;
         END_IF;

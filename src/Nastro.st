@@ -5,14 +5,15 @@ NAMESPACE Libreria
     
     CLASS nastro
 
+
         VAR PUBLIC
             ID:INT;
-            actualState : stato;
-            CntrlForward : BOOL;    // Comando avanti
+            actualState : stato;    // Comando avanti
             CntrlBackward : BOOL;   // Comando indietro
             isForward : BOOL;    // Uscita avanti //necessario?
             isBackward : BOOL;   // Uscita indietro //necessario?
             isEmpty:BOOL;
+            CntrlForward : BOOL;
             colore: colore;
         END_VAR
         
@@ -35,7 +36,7 @@ NAMESPACE Libreria
         
         
         
-        METHOD PUBLIC Update
+        METHOD PUBLIC Update : stato
             
             IF CntrlForward AND NOT CntrlBackward THEN
                 actualState := stato#forward;
@@ -61,10 +62,11 @@ NAMESPACE Libreria
 
         
         
-        METHOD PUBLIC CheckEmpty: BOOL  //check if is isEmpty from sensor
+        METHOD PUBLIC CheckEmpty : BOOL  //check if is isEmpty from sensor
             VAR_INPUT
                 bLightSensor: BOOL;
             END_VAR
+
             IF bLightSensor THEN
                 isEmpty := FALSE;
             ELSIF NOT bLightSensor THEN
@@ -83,17 +85,15 @@ NAMESPACE Libreria
     
         
         
-        METHOD PUBLIC Stop //serve chiamare anche il motore?
-            //Motor.Stop := TRUE;
+        METHOD PUBLIC Stop : BOOL
+            CntrlForward := FALSE;
+            CntrlBackward := FALSE;
             actualState := stato#stop;
         END_METHOD
 
         
         
-        METHOD PUBLIC RunForward //serve chiamare anche i motori?
-            VAR_OUTPUT
-            
-            END_VAR
+        METHOD PUBLIC RunForward : BOOL //serve chiamare anche i motori?
             IF actualState <> stato#error THEN
                 //Motor.Start := TRUE;
                 CntrlForward := TRUE; //aggiungi sicura per eviatre che avanti e indietro possano essere attivati contemporaneamente
