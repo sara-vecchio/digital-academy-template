@@ -1,6 +1,6 @@
 USING Tipi;
 
-NAMESPACE Inventory_lib
+NAMESPACE Libreria
 
     CLASS PUBLIC Inventory
         VAR PUBLIC
@@ -11,6 +11,7 @@ NAMESPACE Inventory_lib
             acceptedColor: USINT;
             StockisFull: BOOL;
             currentMode: Tipi.InventoryMode;
+            statomotore: stato;
         END_VAR
 
         METHOD PUBLIC Init //initialization of the inventory
@@ -23,13 +24,12 @@ NAMESPACE Inventory_lib
             acceptedColor := Color;
             IDpackage:= ID; //anche qui sarebbe color... forse non ha senso avere sia color che ID
             currentStockLevel:=0; //ipotizzo che inizialmente i magazzini siano vuoti
-            StockisFull:=FALSE;
+            StockisFull := FALSE;
             currentMode := Tipi.InventoryMode#Fill; // di default vogliamo riempire i magazzini
         END_METHOD
 
         METHOD PUBLIC isFull  //controlla se il magazzino è pieno
             VAR_OUTPUT
-                StockisFull: BOOL;
                 Load: BOOL; //TRUE:"ok puoi ancora riempire", FALSE:non puoi riempire
             END_VAR
             IF currentStockLevel < maxCapacity THEN
@@ -55,7 +55,7 @@ NAMESPACE Inventory_lib
             END_VAR
             currentMode := mode;
             IF currentMode= InventoryMode#Fill THEN
-                IF StockisFull=FALSE AND DiverterSensor=TRUE AND Tipi.stato=Tipi.stato#forward AND InventoryPhotocell=TRUE THEN
+                IF StockisFull=FALSE AND DiverterSensor=TRUE AND statomotore=Tipi.stato#forward AND InventoryPhotocell=TRUE THEN
                     currentStockLevel:=currentStockLevel+1;
                     ListStoredPackages[currentStockLevel]:= ID; //salvo l'ID del pacco n nell'n-esima posizione dell'array
                 ELSIF StockisFull=TRUE THEN

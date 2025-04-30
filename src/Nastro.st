@@ -91,6 +91,9 @@ NAMESPACE Libreria
         
         
         METHOD PUBLIC RunForward //serve chiamare anche i motori?
+            VAR_OUTPUT
+            
+            END_VAR
             IF actualState <> stato#error THEN
                 //Motor.Start := TRUE;
                 CntrlForward := TRUE; //aggiungi sicura per eviatre che avanti e indietro possano essere attivati contemporaneamente

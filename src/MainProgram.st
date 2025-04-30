@@ -1,34 +1,57 @@
 USING tipi;
 USING Libreria;
+USING System.Timer;
 
 PROGRAM MainProgram
 
+    VAR_external
+        nastri : ARRAY [1..3] OF Libreria.nastro;
+        deviatori : ARRAY [1..3] OF Libreria.deviatore;
+        magazzini : ARRAY [1..4] OF Libreria.magazzino;
+        Tag1 : INT;
+        Tag3 : BYTE;
+    END_VAR
+
+    VAR_external
+        Qnf : BOOL;
+        Qdf : BOOL;
+        Qts : BOOL;
+        Iff : BOOL;
+        Idf : BOOL;
+        Isf : BOOL;
+        Imf : BOOL;
+        Qnn : BOOL;
+        Qdn : BOOL;
+        Qtn : BOOL;
+        Ifn : BOOL;
+        Idn : BOOL;
+        Isn : BOOL;
+        Imn : BOOL;
+        Qnc : BOOL;
+        Qdc : BOOL;
+        Qtr : BOOL;
+        Ifc : BOOL;
+        Idc : BOOL;
+        Isc : BOOL;
+        Ifr : BOOL;
+    END_VAR
+    
     VAR
         tStopMotor : INT:=5;//tempo movimento motori
         n_pacchi :INT:=10;
-        n_mag : INT:=3;// numero magazzini
-
-        nastri : ARRAY[1..3] OF nastro;
-        deviatori : ARRAY[1..3] OF deviatore;
-        magazzini : ARRAY[1..3+1] OF magazzino;
-
         fineProcesso: BOOL := FALSE;
         tempotrascorso: BOOL := FALSE;
         flag : BOOL := FALSE;
+        run_time : TIME;
+    END_VAR
 
+    VAR CONSTANT
+        n_mag:int:=3;
     END_VAR
 
     VAR_TEMP
         i:INT;
     END_VAR
-
-    FOR i:=1 TO n_mag DO //inizializzare componenti
-        nastri[i].Init(i);
-        deviatori[i].Init(i);
-        magazzini[i].Init(i); 
-    END_FOR;
-
-    magazzini[n_mag+1].Init(n_mag+1);
     
     IF not(n_pacchi>0) THEN //se non ci sono pacchi fine smistamento
         fineProcesso:= TRUE;
