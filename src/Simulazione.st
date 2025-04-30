@@ -18,7 +18,7 @@ NAMESPACE Libreria
 
         VAR_OUTPUT
             Idf : USINT;
-            Iff : BOOL;
+            Iff : BOOL := TRUE;
             Isf : BOOL;
             Imf : BOOL;
             Idn : USINT;

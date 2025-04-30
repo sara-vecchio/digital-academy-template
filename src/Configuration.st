@@ -49,8 +49,8 @@ CONFIGURATION MyConfig
     END_VAR
 
     VAR_GLOBAL CONSTANT
-        n_mag : INT := 3 ;
-        capacity : INT:=10;
+        n_mag : INT := 3;
+        capacity : INT := 10;
     END_VAR
 
 END_CONFIGURATION
@@ -63,9 +63,9 @@ PROGRAM LoadConfiguration
 
 
     VAR_EXTERNAL
-        nastri : ARRAY [1..3] OF Libreria.nastro;
-        deviatori : ARRAY [1..3] OF Libreria.deviatore;
-        magazzini : ARRAY [1..4] OF Libreria.inventory;
+        nastri : ARRAY [1..n_mag] OF Libreria.nastro;
+        deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
+        magazzini : ARRAY [1..n_mag+1] OF Libreria.inventory;
     END_VAR
 
     VAR_EXTERNAL CONSTANT
@@ -73,12 +73,16 @@ PROGRAM LoadConfiguration
         capacity : INT;
     END_VAR
 
-    FOR i:=1 TO n_mag DO //inizializzare componenti
         nastri[i].Init(i);
         deviatori[i].Init(i);
-        magazzini[i].Init(capacity,color,ID_i);
+        magazzini[i].Init(capacity,USINT#0,i);
+
+    FOR i:=2 TO n_mag DO //inizializzare componenti
+        nastri[i].Init(i);
+        deviatori[i].Init(i);
+        magazzini[i].Init(capacity,USINT#0,i);
     END_FOR;
 
-    magazzini[n_mag+1].Init(n_mag+1);
+    magazzini[n_mag+1].Init(capacity,USINT#0,n_mag+1);
 
 END_PROGRAM

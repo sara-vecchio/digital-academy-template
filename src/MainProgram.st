@@ -65,16 +65,16 @@ PROGRAM MainProgram
 
         WHILE i<n_mag+1 DO
             
-            //simulazione accendi il sensore fotocellula
+            Simulazione();
 
             Qnf := nastri[i].RunForward();
             nastri[i].isEmpty := nastri[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
-            Simulazione(); 
+            Simulazione();
             
             IF Isf THEN
             Qnf := nastri[i].Stop();
-            nastri[i].isEmpty := nastri[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
+            nastri[i].isEmpty := nastri[i].CheckEmpty(Imf);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
@@ -86,18 +86,16 @@ PROGRAM MainProgram
                 
                 IF NOT(magazzini[i].StockisFull) THEN
                     deviatori[i].Accept();
-                    /*implementare nastro in inventory
-                    magazzini[i].CntrlForward := TRUE;//attiva motore magazzino
+                    
+                    Qts:=magazzini[i].RunForward();//attiva motore tank scarto 
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    nastri[i].isEmpty := TRUE;//spegne la fotocellula nastro 
-                    Simulazione()*/
+                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
+                    magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
+                    Simulazione();
 
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
-                    magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel(); //lo spazio del magazzino cala
-
-                    IF magazzini[i].currentStockLevel = 0 THEN//se non c'è più spazio il magazzino diventa pieno
-                        magazzini[i].isFull();
-                    END_IF;
+                    magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel()+1; //lo spazio del magazzino cala
+                    magazzini[i].isFull();
                     
                     flag:=TRUE;// flag per segnare che i pacchi sono già stati ridotti
                     
@@ -113,8 +111,9 @@ PROGRAM MainProgram
 
         IF i=n_mag+1 AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
             n_pacchi:= n_pacchi-1; //il numero di pacchi cala
-            magazzini[n_mag+1].currentStockLevel := magazzini[n_mag+1].GetCurrentStockLevel();  //lo spazio del magazzino scarto finale cala
-            IF magazzini[n_mag+1].currentStockLevel = -1 THEN // se lo spazio del magazzino finale da 0 passa a -1 significa che vogliamo forzare un pacco che non è stato smistato nel magazzino finale pieno 
+            magazzini[n_mag+1].currentStockLevel := magazzini[n_mag+1].GetCurrentStockLevel()+1;
+            magazzini[n_mag+1].isFull();  //lo spazio del magazzino scarto finale cala
+            IF magazzini[n_mag+1].StockisFull THEN // se lo spazio del magazzino finale da 0 passa a -1 significa che vogliamo forzare un pacco che non è stato smistato nel magazzino finale pieno 
                 fineProcesso := TRUE; //esci dal ciclo perche non posso più carica
             END_IF;
         END_IF;

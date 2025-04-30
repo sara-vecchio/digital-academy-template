@@ -13,6 +13,7 @@ NAMESPACE Libreria
             currentMode: Tipi.InventoryMode;
             statomotore: stato;
         END_VAR
+        
         METHOD PUBLIC Init //initialization of the inventory
             VAR_INPUT
                 Capacity : INT;
