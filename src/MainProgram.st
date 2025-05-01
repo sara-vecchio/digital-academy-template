@@ -5,10 +5,9 @@ USING System.Timer;
 PROGRAM MainProgram
 
     VAR_external
-        nastri : ARRAY [1..3] OF Libreria.nastro;
-        deviatori : ARRAY [1..3] OF Libreria.deviatore;
-        magazzini : ARRAY [1..4] OF Libreria.inventory;
-
+        nastri : ARRAY [0..3] OF Libreria.nastro;
+        deviatori : ARRAY [0..3] OF Libreria.deviatore;
+        magazzini : ARRAY [0..4] OF Libreria.inventory;
     END_VAR
 
     VAR_external
@@ -36,19 +35,19 @@ PROGRAM MainProgram
     END_VAR
     
     VAR
-        n_pacchi :INT:=10;
         fineProcesso: BOOL := FALSE;
         tempotrascorso: BOOL := FALSE;
         flag : BOOL := FALSE;
         run_time : TIME;
     END_VAR
 
-    VAR CONSTANT
-        n_mag: int :=3;
+    VAR_external CONSTANT 
+        n_mag: int;
     END_VAR
 
     VAR_TEMP
         i:INT;
+        n_pacchi :INT;
     END_VAR
     
     IF n_pacchi<=0 THEN //se non ci sono pacchi fine smistamento
@@ -64,9 +63,8 @@ PROGRAM MainProgram
         END_IF;
 
         WHILE i<n_mag+1 DO
-            
-            Simulazione();
 
+            Simulazione();
             Qnf := nastri[i].RunForward();
             nastri[i].isEmpty := nastri[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
@@ -110,16 +108,15 @@ PROGRAM MainProgram
         END_WHILE;
 
         IF i=n_mag+1 AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
-            n_pacchi:= n_pacchi-1; //il numero di pacchi cala
+            n_pacchi := n_pacchi-1; //il numero di pacchi cala
             magazzini[n_mag+1].currentStockLevel := magazzini[n_mag+1].GetCurrentStockLevel()+1;
-            magazzini[n_mag+1].isFull();  //lo spazio del magazzino scarto finale cala
-            IF magazzini[n_mag+1].StockisFull THEN // se lo spazio del magazzino finale da 0 passa a -1 significa che vogliamo forzare un pacco che non è stato smistato nel magazzino finale pieno 
-                fineProcesso := TRUE; //esci dal ciclo perche non posso più carica
+            magazzini[n_mag+1].isFull();  
+            
+            IF magazzini[n_mag+1].StockisFull THEN 
+                fineProcesso := TRUE; //esci dal ciclo perche non posso più caricare
             END_IF;
         END_IF;
 
     END_WHILE;
-
-    //smistamento completato 
 
 END_PROGRAM

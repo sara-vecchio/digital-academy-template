@@ -42,15 +42,18 @@ CONFIGURATION MyConfig
     END_VAR
 
     VAR_GLOBAL
-        nastri : ARRAY[1..n_mag] OF nastro;
-        deviatori : ARRAY[1..n_mag] OF deviatore;
-        magazzini : ARRAY[1..n_mag+1] OF inventory;
-        n_pacchi : INT;
+        nastri : ARRAY[0..n_mag] OF nastro;
+        deviatori : ARRAY[0..n_mag] OF deviatore;
+        magazzini : ARRAY[0..n_mag+1] OF inventory;
+        n_pacchi : INT := 10;   
     END_VAR
 
     VAR_GLOBAL CONSTANT
         n_mag : INT := 3;
         capacity : INT := 10;
+
+        maxVal : INT := 7;
+        minVal : INT :=1;
     END_VAR
 
 END_CONFIGURATION
@@ -58,29 +61,36 @@ END_CONFIGURATION
 PROGRAM LoadConfiguration
 
     VAR_TEMP
-        i:INT :=1;
+        i:INT :=0;
     END_VAR
 
+    VAR
+    coloreq : USINT;
+    END_VAR
 
     VAR_EXTERNAL
-        nastri : ARRAY [1..n_mag] OF Libreria.nastro;
-        deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
-        magazzini : ARRAY [1..n_mag+1] OF Libreria.inventory;
+        nastri : ARRAY [0..n_mag] OF Libreria.nastro;
+        deviatori : ARRAY [0..n_mag] OF Libreria.deviatore;
+        magazzini : ARRAY [0..n_mag+1] OF Libreria.inventory;
     END_VAR
 
     VAR_EXTERNAL CONSTANT
         n_mag : INT;
         capacity : INT;
+        maxVal : INT ;
+        minVal : INT ;
     END_VAR
 
         nastri[i].Init(i);
         deviatori[i].Init(i);
-        magazzini[i].Init(capacity,USINT#0,i);
+        coloreq := TO_USINT(i);
+        magazzini[i].Init(capacity,coloreq,i);
 
-    FOR i:=2 TO n_mag DO //inizializzare componenti
+    FOR i:=1 TO n_mag DO //inizializzare componenti
         nastri[i].Init(i);
         deviatori[i].Init(i);
-        magazzini[i].Init(capacity,USINT#0,i);
+        coloreq := TO_USINT(i);
+        magazzini[i].Init(capacity,coloreq,i);
     END_FOR;
 
     magazzini[n_mag+1].Init(capacity,USINT#0,n_mag+1);
