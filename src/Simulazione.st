@@ -1,5 +1,6 @@
 USING tipi;
 USING System.Timer;
+USING tempo;
 
 NAMESPACE Libreria
     
@@ -32,26 +33,27 @@ NAMESPACE Libreria
             Ifr : BOOL;
         END_VAR
 
+        VAR_EXTERNAL
+            elapsedtimer : tempo.Timer;
+        END_VAR
+
         VAR 
-            tStopMotor : INT := 5;//tempo movimento motori
-            tempo : BOOL;
+            tStopMotor : Time;//tempo movimento motori
         END_VAR
 
         IF Qnf AND Iff THEN
-            tempo := FALSE;
-            tempo := Timer(tStopMotor); // aspetta 5 secondi
-            IF tempo THEN
+            
+            IF elapsedtimer.Check(Qnf,tStopMotor) THEN
                 Iff := FALSE;// spegni fotocellula del nastro
-                Isf := TRUE;
+                Isf := TRUE;// accendi sensore
             END_IF;
+
         END_IF;
 
         IF Qts AND Isf THEN
-            tempo := FALSE;
             Isf := FALSE;
-            Imf := TRUE;
-            tempo := Timer(tStopMotor); // aspetta 5 secondi
-            IF tempo THEN
+            Imf := TRUE; 
+            IF elapsedtimer.Check(Imf,tStopMotor) THEN
                 Imf := FALSE;
             END_IF;
         END_IF;

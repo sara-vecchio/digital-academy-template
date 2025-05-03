@@ -11,6 +11,7 @@ PROGRAM MainProgram
     END_VAR
 
     VAR_external
+
         Qnf : BOOL;
         Qdf : BOOL;
         Qts : BOOL;
@@ -18,6 +19,7 @@ PROGRAM MainProgram
         Idf : USINT;
         Isf : BOOL;
         Imf : BOOL;
+
         Qnn : BOOL;
         Qdn : BOOL;
         Qtn : BOOL;
@@ -25,6 +27,7 @@ PROGRAM MainProgram
         Idn : USINT;
         Isn : BOOL;
         Imn : BOOL;
+
         Qnc : BOOL;
         Qdc : BOOL;
         Qtr : BOOL;
@@ -55,7 +58,7 @@ PROGRAM MainProgram
     END_IF;
 
     WHILE NOT(fineProcesso) DO //finche ci sono pacchi da smistare 
-        i:=1;
+        i:=0;
         Flag := FALSE;
 
         IF n_pacchi = 0 THEN

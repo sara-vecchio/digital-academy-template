@@ -1,18 +1,21 @@
 USING Siemens.Simatic.S71500.Tasks;
 USING tipi;
 USING Libreria;
+USING tempo;
 
 CONFIGURATION MyConfig
 
-    TASK Main(PRIORITY:=0);
+    
     TASK Load(PRIORITY:=1);
+    TASK Main(PRIORITY:=0);
     
     PROGRAM P0 WITH Load: LoadConfiguration; 
     PROGRAM P1 WITH Main: MainProgram;
 
     // Configuring IO tags    
     VAR_GLOBAL
-
+        
+        //input output feed
         Qnf AT %Q0.0 : BOOL;
         Qdf AT %Q0.1 : BOOL;
         Qts AT %Q0.2 : BOOL;
@@ -22,6 +25,7 @@ CONFIGURATION MyConfig
         Isf AT %I1.1 : BOOL;
         Imf AT %I1.2 : BOOL;
 
+        //input output ennesimo magazzino
         Qnn AT %Q0.3 : BOOL;
         Qdn AT %Q0.4 : BOOL;
         Qtn AT %Q0.5 : BOOL;
@@ -31,6 +35,7 @@ CONFIGURATION MyConfig
         Isn AT %I3.1 : BOOL;
         Imn AT %I3.2 : BOOL;
 
+        //input output coda
         Qnc AT %Q0.6 : BOOL;
         Qdc AT %Q0.7 : BOOL;
         Qtr AT %Q1.0 : BOOL; 
@@ -45,7 +50,8 @@ CONFIGURATION MyConfig
         nastri : ARRAY[0..n_mag] OF nastro;
         deviatori : ARRAY[0..n_mag] OF deviatore;
         magazzini : ARRAY[0..n_mag+1] OF inventory;
-        n_pacchi : INT := 10;   
+        n_pacchi : INT := 10; 
+        elapsedtimer : tempo.Timer;  
     END_VAR
 
     VAR_GLOBAL CONSTANT

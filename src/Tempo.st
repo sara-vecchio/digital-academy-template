@@ -1,20 +1,32 @@
-FUNCTION Timer: BOOL
-    VAR_INPUT
-        tStopMotor: INT;   // Tempo massimo che la funzione aspetta
-    END_VAR
+USING System.Timer;
+
+NAMESPACE tempo
     
+    Class Timer
+
     VAR
-        tTemp: INT := 0;   // Variabile temporanea per il conteggio
+        ton : OnDelay;
     END_VAR
-    
-    Timer:=FALSE;
-    // Ciclo WHILE per incrementare il valore di t fino a tStopMotor
-    WHILE tTemp < tStopMotor DO
-        tTemp := tTemp + 1;
-    END_WHILE;
-    
-    // Dopo aver completato il ciclo, ritorna TRUE (indica che è finito)
-    Timer := TRUE; 
-    
-END_FUNCTION
+
+    METHOD PUBLIC Check : BOOL 
+        VAR_INPUT
+            signal: BOOL;
+            duration : time;
+            timeout : time;
+        END_VAR
+        ton(signal := TRUE, duration := Timeout);
+        IF (ton.output) THEN
+            Check := TRUE;
+        ELSE
+           Check := FALSE;
+        END_IF;
+    END_METHOD
+
+    METHOD PUBLIC Reset
+        ton(signal:= FALSE);
+    END_METHOD
+
+    END_class 
+
+END_NAMESPACE
     
