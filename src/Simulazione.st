@@ -1,4 +1,5 @@
 USING tipi;
+USING System.Timer;
 
 NAMESPACE Libreria
     
@@ -32,7 +33,7 @@ NAMESPACE Libreria
         END_VAR
 
         VAR 
-            tStopMotor : INT:=5;//tempo movimento motori
+            tStopMotor : INT := 5;//tempo movimento motori
             tempo : BOOL;
         END_VAR
 
