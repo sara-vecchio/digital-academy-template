@@ -8,6 +8,7 @@ PROGRAM MainProgram
         nastri : ARRAY [0..3] OF Libreria.nastro;
         deviatori : ARRAY [0..3] OF Libreria.deviatore;
         magazzini : ARRAY [0..4] OF Libreria.inventory;
+        coloreSim : USINT;
     END_VAR
 
     VAR_external
@@ -79,7 +80,7 @@ PROGRAM MainProgram
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
-            IF deviatori[i].IsMycolor(Idf) THEN // controllato se il pacco è da smistare
+            IF deviatori[i].IsMycolor(coloreSim) THEN // controllato se il pacco è da smistare
                 
                 IF magazzini[i].StockisFull THEN
                     deviatori[i].Discard();

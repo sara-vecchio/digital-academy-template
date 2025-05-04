@@ -47,6 +47,11 @@ NAMESPACE Libreria
         END_METHOD
 
 
+        METHOD PUBLIC GetCurrentStockLevel : INT  //se chiamato, mostra il livello di riempimento attuale
+            GetCurrentStockLevel:= currentStockLevel;
+        END_METHOD
+
+
         METHOD PUBLIC EmptyFIFO
             VAR
                 i: INT;
@@ -62,11 +67,6 @@ NAMESPACE Libreria
                 statomotore := Tipi.stato#stop;
                 currentMode:=Tipi.InventoryMode#Fill;
             END_IF;
-        END_METHOD
-
-
-        METHOD PUBLIC GetCurrentStockLevel : INT  //se chiamato, mostra il livello di riempimento attuale
-            GetCurrentStockLevel:= currentStockLevel;
         END_METHOD
 
 
@@ -89,7 +89,7 @@ NAMESPACE Libreria
             ELSE // the mode is set to "empty"
                 IF recipe.RecipeSatisfiable()=TRUE THEN //AND currentStockLevel > 0 THEN
                     statomotore := Tipi.stato#backward;
-                    EmptyFIFO();
+                    EmptyFIFO(); //potete commentare questa riga mentre trovo una soluzione all'errore
                 END_IF;
             END_IF;            
         END_METHOD             

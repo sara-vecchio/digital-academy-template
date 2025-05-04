@@ -2,15 +2,18 @@ USING Siemens.Simatic.S71500.Tasks;
 USING tipi;
 USING Libreria;
 USING tempo;
+USING System.Timer;
 
 CONFIGURATION MyConfig
 
     
     TASK Load(PRIORITY:=1);
     TASK Main(PRIORITY:=0);
+    TASK PackagesIn(PRIORITY:=0);
     
     PROGRAM P0 WITH Load: LoadConfiguration; 
     PROGRAM P1 WITH Main: MainProgram;
+    PROGRAM P2 WITH PackagesIn: RandPack;
 
     // Configuring IO tags    
     VAR_GLOBAL
@@ -52,6 +55,7 @@ CONFIGURATION MyConfig
         magazzini : ARRAY[0..n_mag+1] OF inventory;
         n_pacchi : INT := 10; 
         elapsedtimer : tempo.Timer;
+        coloreSim: USINT;
     END_VAR
 
     VAR_GLOBAL CONSTANT
@@ -100,5 +104,37 @@ PROGRAM LoadConfiguration
     END_FOR;
 
     magazzini[n_mag+1].Init(capacity,USINT#0,n_mag+1); //se questo è scarto coda non è USINT#0...
+
+END_PROGRAM
+
+
+PROGRAM RandPack
+    VAR
+        PackOnDelay : OnDelay;
+        deltaT: LTIME;
+        triggerSuccess : BOOL;
+        RandomSeed : INT := 12;
+        coloreIngresso: colore;
+        //enable : BOOL := TRUE;
+    END_VAR
+
+    VAR_EXTERNAL
+        coloreSim : USINT;
+    END_VAR
+
+    PackOnDelay(signal := TRUE, duration := LTIME#5S); // Timer ogni 5 secondi per simulare l’arrivo di un pacco
+    deltaT := PackOnDelay.elapsedTime;
+    triggerSuccess := PackOnDelay.output;
+
+    //timeAccumulator(enable := enable, previous := deltaT);
+    
+    IF triggerSuccess THEN //output diventa automaticamente TRUE se sono passati 5s
+        deltaT := LTIME#0MS; //reset   
+        // Simula colore random tra 0 e 7
+        RandomSeed := (RandomSeed * 37 + 91) MOD 1000;
+        coloreIngresso := TO_USINT(RandomSeed MOD 8); //MOD 8 limita il numero tra 0 e 7
+
+        coloreSim:= coloreIngresso; //aggiorno una variabile globale che posso usare nel MainProgram o altrove
+    END_IF; 
 
 END_PROGRAM
