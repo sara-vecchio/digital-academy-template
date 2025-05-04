@@ -51,11 +51,11 @@ CONFIGURATION MyConfig
         deviatori : ARRAY[0..n_mag] OF deviatore;
         magazzini : ARRAY[0..n_mag+1] OF inventory;
         n_pacchi : INT := 10; 
-        elapsedtimer : tempo.Timer;  
+        elapsedtimer : tempo.Timer;
     END_VAR
 
     VAR_GLOBAL CONSTANT
-        n_mag : INT := 3;
+        n_mag : INT := 3; //7
         capacity : INT := 10;
 
         maxVal : INT := 7;
@@ -99,6 +99,6 @@ PROGRAM LoadConfiguration
         magazzini[i].Init(capacity,coloreq,i);
     END_FOR;
 
-    magazzini[n_mag+1].Init(capacity,USINT#0,n_mag+1);
+    magazzini[n_mag+1].Init(capacity,USINT#0,n_mag+1); //se questo è scarto coda non è USINT#0...
 
 END_PROGRAM
