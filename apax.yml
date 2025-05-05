@@ -12,6 +12,10 @@ targets:
 catalogs:
   "@ax/simatic-ax": 2411.1.0
 
+devDependencies:
+  "@ax/sdk": 2411.1.0
+  "@ax/pc-identifier": ^1.1.0
+  
 dependencies:
   "@ax/simatic-1500-tasks": 7.0.6
   "@ax/system-timer": 8.0.7
