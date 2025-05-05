@@ -10,7 +10,8 @@
       "@ax/simatic-1500-tasks": "7.0.6",
       "@ax/system-timer": "8.0.7",
       "@ax/sdk": "2411.1.0",
-      "@ax/simatic-1500-clocks": "8.0.8"
+      "@ax/simatic-1500-clocks": "8.0.8",
+      "@ax/pc-identifier": "^1.1.0"
     },
     "catalogs": {
       "@ax/simatic-ax": "2411.1.0"
@@ -68,6 +69,20 @@
       "version": "8.0.8",
       "integrity": "sha512-97hevBrfhlDppBYv0uaATE/Yv1/YPZh6Bc3U3DxLDVHdFPqWQy7R6VQmiqBtjfw8YBjrxYsCVnABJ/Lu0GVciw==",
       "resolved": "https://registry.simatic-ax.siemens.io/@ax/simatic-1500-clocks/-/simatic-1500-clocks-8.0.8.tgz",
+      "dependencies": {}
+    },
+    "@ax/pc-identifier": {
+      "name": "@ax/pc-identifier",
+      "version": "1.1.0",
+      "integrity": "sha512-4r7ztmPjpqCBAKulZqP/+8pGOpoWVscIEk7WC4MM3EnufIa966I12Rq2ztKOrfEIyeifqEFjIhTAXpbkInk71w==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/pc-identifier/-/pc-identifier-1.1.0.tgz",
+      "os": [
+        "win32",
+        "linux"
+      ],
+      "cpu": [
+        "x64"
+      ],
       "dependencies": {}
     },
     "@ax/system-datetime": {
