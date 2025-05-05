@@ -6,9 +6,8 @@ USING System.Timer;
 
 CONFIGURATION MyConfig
 
-    
-    TASK Load(PRIORITY:=1);
-    TASK Main(PRIORITY:=0);
+    TASK Load: Startup;
+    TASK Main(PRIORITY:=1);
     TASK PackagesIn(PRIORITY:=0);
     
     PROGRAM P0 WITH Load: LoadConfiguration; 
