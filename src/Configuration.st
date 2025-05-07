@@ -20,7 +20,7 @@ CONFIGURATION MyConfig
         //input output feed
         Qnf AT %Q0.0 : BOOL;
         Qdf AT %Q0.1 : BOOL;
-        Qts AT %Q0.2 : BOOL;
+        Qtf AT %Q0.2 : BOOL;
 
         Idf AT %IB6 : USINT;
         Iff AT %I0.0 : BOOL;
@@ -71,14 +71,14 @@ CONFIGURATION MyConfig
 
     VAR_GLOBAL
         nastri : ARRAY[1..n_mag] OF nastro;
-        Qn : ARRAY[1..n_mag] of BOOL := [Qnf,Qn2,Qn3,Qn4,Qnc];
-        Qd : ARRAY[1..n_mag] of BOOL := [Qdf,Qd2,Qd3,Qd4,Qdc];
-        Qt : ARRAY[1..n_mag] of BOOL := [Qtf,Qt2,Qt3,Qt4,Qtc];
+        Qn : ARRAY[1..n_mag] of BOOL ;
+        Qd : ARRAY[1..n_mag] of BOOL ;
+        Qt : ARRAY[1..n_mag] of BOOL ;
 
-        Id : ARRAY[1..n_mag] of USINT := [Idf,Id2,Id3,Id4,Idc];
-        If_ : ARRAY[1..n_mag] of BOOL := [Iff,If2,If3,If4,Ifc];
-        Is : ARRAY[1..n_mag] of BOOL := [Isf,Is2,Is3,Is4,Isc];
-        Im : ARRAY[1..n_mag] of BOOL := [Imf,Im2,Im3,Im4,Imc];
+        Id : ARRAY[1..n_mag] of USINT ;
+        If_ : ARRAY[1..n_mag] of BOOL ;
+        Is : ARRAY[1..n_mag] of BOOL ;
+        Im : ARRAY[1..n_mag] of BOOL ;
 
         deviatori : ARRAY[1..n_mag] OF deviatore;
         magazzini : ARRAY[1..n_mag] OF inventory;
@@ -96,6 +96,7 @@ CONFIGURATION MyConfig
 END_CONFIGURATION
 
 PROGRAM LoadConfiguration
+    
 
     VAR_TEMP
         i:INT :=0;
@@ -109,12 +110,101 @@ PROGRAM LoadConfiguration
         nastri : ARRAY [1..n_mag] OF Libreria.nastro;
         deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
         magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
+        Qn : ARRAY[1..n_mag] of BOOL ;
+        Qd : ARRAY[1..n_mag] of BOOL ;
+        Qt : ARRAY[1..n_mag] of BOOL ;
+        Id : ARRAY[1..n_mag] of USINT ;
+        If_ : ARRAY[1..n_mag] of BOOL ;
+        Is : ARRAY[1..n_mag] of BOOL ;
+        Im : ARRAY[1..n_mag] of BOOL ;
+
+        Qnf : BOOL;
+        Qdf : BOOL;
+        Qtf : BOOL;
+        Idf : USINT;
+        Iff : BOOL;
+        Isf : BOOL;
+        Imf : BOOL;
+        Qnc : BOOL;
+        Qdc : BOOL;
+        Qtc : BOOL;
+        Idc : USINT;
+        Ifc : BOOL;
+        Isc : BOOL;
+        Imc : BOOL;
+        Qn2 : BOOL;
+        Qd2 : BOOL;
+        Qt2 : BOOL;
+        Id2 : USINT;
+        If2 : BOOL;
+        Is2 : BOOL;
+        Im2 : BOOL;
+        Qn3 : BOOL;
+        Qd3 : BOOL;
+        Qt3 : BOOL;
+        Id3 : USINT;
+        If3 : BOOL;
+        Is3 : BOOL;
+        Im3 : BOOL;
+        Qn4 : BOOL;
+        Qd4 : BOOL;
+        Qt4 : BOOL;
+        Id4 : USINT;
+        If4 : BOOL;
+        Is4 : BOOL;
+        Im4 : BOOL;
+        n_pacchi : INT;
+        elapsedtimer : tempo.Timer;
+        coloreSim : USINT;
     END_VAR
 
     VAR_EXTERNAL CONSTANT
         n_mag : INT;
         capacity : INT;
     END_VAR
+
+
+        Qn[1]  := Qnf;
+        Qn[2]  := Qn2;
+        Qn[3]  := Qn3;
+        Qn[4]  := Qn4;
+        Qn[5]  := Qnc;
+
+        Qd[1]  := Qdf;
+        Qd[2]  := Qd2;
+        Qd[3]  := Qd3;
+        Qd[4]  := Qd4;
+        Qd[5]  := Qdc;
+
+        Qt[1]  := Qtf;
+        Qt[2]  := Qt2;
+        Qt[3]  := Qt3;
+        Qt[4]  := Qt4;
+        Qt[5]  := Qtc;
+
+        Id[1]  := Idf;
+        Id[2]  := Id2;
+        Id[3]  := Id3;
+        Id[4]  := Id4;
+        Id[5]  := Idc;
+
+        If_[1] := Iff;
+        If_[2] := If2;
+        If_[3] := If3;
+        If_[4] := If4;
+        If_[5] := Ifc;
+
+        Is[1] := Isf;
+        Is[2] := Is2;
+        Is[3] := Is3;
+        Is[4] := Is4;
+        Is[5] := Isc;
+
+        Im[1] := Imf;
+        Im[2] := Im2;
+        Im[3] := Im3;
+        Im[4] := Im4;
+        Im[5] := Imc;
 
         //feed
         nastri[1].ID := 1;
