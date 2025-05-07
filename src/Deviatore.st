@@ -43,10 +43,10 @@ NAMESPACE Libreria
 
         END_METHOD
 
-        METHOD PUBLIC Discard 
+        METHOD PUBLIC Discard : BOOL 
 
             cntrlApri := TRUE;
-
+            
         END_METHOD
         
         METHOD PUBLIC IsMyColor : BOOL  //controlla se accettare o meno il pacco
@@ -55,9 +55,9 @@ NAMESPACE Libreria
             END_VAR
             
             IF uSensor = color THEN
-                accetta :=TRUE;
+                IsMyColor := TRUE;
             ELSE
-                accetta :=FALSE;
+                IsMyColor := FALSE;
             END_IF;
             
         END_METHOD

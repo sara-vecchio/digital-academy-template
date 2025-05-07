@@ -21,7 +21,7 @@ CONFIGURATION MyConfig
         Qnf AT %Q0.0 : BOOL;
         Qdf AT %Q0.1 : BOOL;
         Qts AT %Q0.2 : BOOL;
-        
+
         Idf AT %IB6 : USINT;
         Iff AT %I0.0 : BOOL;
         Isf AT %I0.1 : BOOL;
@@ -30,12 +30,12 @@ CONFIGURATION MyConfig
         //input output coda
         Qnc AT %Q0.3 : BOOL;
         Qdc AT %Q0.4 : BOOL;
-        Qtr AT %Q0.5 : BOOL; 
+        Qtc AT %Q0.5 : BOOL; 
                 
         Idc AT %IB4 : USINT;
         Ifc AT %I0.3 : BOOL;
         Isc AT %I0.4 : BOOL;
-        Ifr AT %I0.5 : BOOL;
+        Ifc AT %I0.5 : BOOL;
 
         //input output secondo magazzino
         Qn2 AT %Q0.6 : BOOL;
@@ -71,6 +71,15 @@ CONFIGURATION MyConfig
 
     VAR_GLOBAL
         nastri : ARRAY[1..n_mag] OF nastro;
+        Qn : ARRAY[1..n_mag] of BOOL := [Qnf,Qn2,Qn3,Qn4,Qnc];
+        Qd : ARRAY[1..n_mag] of BOOL := [Qdf,Qd2,Qd3,Qd4,Qdc];
+        Qt : ARRAY[1..n_mag] of BOOL := [Qtf,Qt2,Qt3,Qt4,Qtc];
+
+        Id : ARRAY[1..n_mag] of USINT := [Idf,Id2,Id3,Id4,Idc];
+        If_ : ARRAY[1..n_mag] of BOOL := [Iff,If2,If3,If4,Ifc];
+        Is : ARRAY[1..n_mag] of BOOL := [Isf,Is2,Is3,Is4,Isc];
+        Im : ARRAY[1..n_mag] of BOOL := [Imf,Im2,Im3,Im4,Imc];
+
         deviatori : ARRAY[1..n_mag] OF deviatore;
         magazzini : ARRAY[1..n_mag] OF inventory;
         n_pacchi : INT := 10; 
@@ -82,6 +91,7 @@ CONFIGURATION MyConfig
         n_mag : INT := 5; // numero magazzini considerando uno feed e uno scarto e il penultimo ricetta o semplice
         capacity : INT := 10;
     END_VAR
+    
 
 END_CONFIGURATION
 

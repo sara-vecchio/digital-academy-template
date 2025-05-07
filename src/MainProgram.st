@@ -8,7 +8,6 @@ PROGRAM MainProgram
         nastri : ARRAY [1..n_mag] OF Libreria.nastro;
         deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
         magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
-        coloreSim : USINT;
     END_VAR
 
     VAR_external
@@ -49,6 +48,14 @@ PROGRAM MainProgram
         Im4 : BOOL;
         elapsedtimer : tempo.Timer;
     END_VAR
+
+    VAR_EXTERNAL
+        elapsedtimer : tempo.Timer;
+    END_VAR
+
+    VAR 
+        tStopMotor : Time;//tempo movimento motori
+    END_VAR
     
     VAR
         fineProcesso: BOOL := FALSE;
@@ -72,7 +79,7 @@ PROGRAM MainProgram
     END_IF;
 
     WHILE NOT(fineProcesso) DO //finche ci sono pacchi da smistare 
-        i:=0;
+        i:=1;
         Flag := FALSE;
 
         IF n_pacchi = 0 THEN
@@ -82,32 +89,36 @@ PROGRAM MainProgram
         WHILE i<n_mag DO
 
             Simulazione();
-            Qnf := nastri[i].RunForward();
-            nastri[i].isEmpty := nastri[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
+            Qn[i] := nastri[i].RunForward();
+            nastri[i].isEmpty := nastri[i].CheckEmpty(If_[i]);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
-            Simulazione();
+            IF elapsedtimer.Check(Qn[i],tStopMotor) THEN
+                If_[i] := FALSE;// spegni fotocellula del nastro
+                Is[i] := TRUE;// accendi sensore
+            END_IF;
             
-            IF Isf THEN
-            Qnf := nastri[i].Stop();
-            nastri[i].isEmpty := nastri[i].CheckEmpty(Imf);// controlla se il nastro ha un pacco
+            IF Is[i] THEN
+            Qn[i] := nastri[i].Stop();
+            nastri[i].isEmpty := nastri[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
-            IF deviatori[i].IsMycolor(coloreSim) THEN // controllato se il pacco è da smistare
+            IF deviatori[i].IsMycolor(Id[i]) THEN // controllato se il pacco è da smistare
                 
                 IF magazzini[i].StockisFull THEN
                     deviatori[i].Discard();
-                END_IF;
-                
-                IF NOT(magazzini[i].StockisFull) THEN
+                ELSE
                     deviatori[i].Accept();
-                    
-                    Qts:=magazzini[i].RunForward();//attiva motore tank scarto 
+                    Qt[i]:=magazzini[i].RunForward();//attiva motore tank 
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
+                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
-                    Simulazione();
-                    Qts := magazzini[i].Stop();
+                    Is[i] := FALSE;
+                    Im[i] := TRUE; 
+                    IF elapsedtimer.Check(Im[i],tStopMotor) THEN
+                        Im[i] := FALSE;
+                    END_IF;
+                    Qt[i] := magazzini[i].Stop();
 
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
                     magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel()+1; //lo spazio del magazzino cala
@@ -125,12 +136,12 @@ PROGRAM MainProgram
         
         END_WHILE;
 
-        IF i=n_mag+1 AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
+        IF i=n_mag AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
             n_pacchi := n_pacchi-1; //il numero di pacchi cala
-            magazzini[n_mag+1].currentStockLevel := magazzini[n_mag+1].GetCurrentStockLevel()+1;
-            magazzini[n_mag+1].isFull();  
+            magazzini[n_mag].currentStockLevel := magazzini[n_mag].GetCurrentStockLevel()+1;
+            magazzini[n_mag].isFull();  
             
-            IF magazzini[n_mag+1].StockisFull THEN 
+            IF magazzini[n_mag].StockisFull THEN 
                 fineProcesso := TRUE; //esci dal ciclo perche non posso più caricare
             END_IF;
         END_IF;

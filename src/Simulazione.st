@@ -4,7 +4,7 @@ USING tempo;
 
 NAMESPACE Libreria
     
-    FUNCTION Simulazione 
+    FUNCTION Simulazione
            
         VAR_INPUT 
             Qnf : BOOL;

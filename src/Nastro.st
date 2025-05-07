@@ -63,14 +63,15 @@ NAMESPACE Libreria
         
         
         METHOD PUBLIC CheckEmpty : BOOL  //check if is isEmpty from sensor
+           
             VAR_INPUT
                 bLightSensor: BOOL;
             END_VAR
 
             IF bLightSensor THEN
-                isEmpty := FALSE;
+                CheckEmpty := FALSE;
             ELSIF NOT bLightSensor THEN
-                isEmpty := TRUE;
+                CheckEmpty := TRUE;
             ELSE
                 actualState := stato#error;
             END_IF;
