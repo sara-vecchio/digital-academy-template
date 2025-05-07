@@ -16,14 +16,6 @@ NAMESPACE tipi
         ) := Undefined;
     END_TYPE
 
-    /*TYPE
-        Pacco:
-        STRUCT 
-            possibleColor: colore;
-            present: BOOL; 
-        END_STRUCT;
-    END_TYPE*/
-
     TYPE InventoryMode: 
         (Fill, Empty);
     END_TYPE
