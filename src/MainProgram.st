@@ -20,11 +20,11 @@ PROGRAM MainProgram
         Imf : BOOL;
         Qnc : BOOL;
         Qdc : BOOL;
-        Qtr : BOOL;
+        Qtc : BOOL;
         Idc : USINT;
         Ifc : BOOL;
         Isc : BOOL;
-        Ifr : BOOL;
+        Imc : BOOL; 
         Qn2 : BOOL;
         Qd2 : BOOL;
         Qt2 : BOOL;
@@ -49,9 +49,7 @@ PROGRAM MainProgram
         elapsedtimer : tempo.Timer;
     END_VAR
 
-    VAR_EXTERNAL
-        elapsedtimer : tempo.Timer;
-    END_VAR
+   
 
     VAR 
         tStopMotor : Time;//tempo movimento motori

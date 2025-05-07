@@ -35,7 +35,7 @@ CONFIGURATION MyConfig
         Idc AT %IB4 : USINT;
         Ifc AT %I0.3 : BOOL;
         Isc AT %I0.4 : BOOL;
-        Ifc AT %I0.5 : BOOL;
+        Imc AT %I0.5 : BOOL;
 
         //input output secondo magazzino
         Qn2 AT %Q0.6 : BOOL;
