@@ -73,7 +73,7 @@ CONFIGURATION MyConfig
     VAR_GLOBAL
         nastri : ARRAY[1..n_mag] OF nastro;
         deviatori : ARRAY[1..n_mag] OF deviatore;
-        magazzini : ARRAY[1..n_mag+1] OF inventory;
+        magazzini : ARRAY[1..n_mag] OF inventory;
         n_pacchi : INT := 10; 
         elapsedtimer : tempo.Timer;
         coloreSim: USINT;
@@ -99,7 +99,7 @@ PROGRAM LoadConfiguration
     VAR_EXTERNAL
         nastri : ARRAY [1..n_mag] OF Libreria.nastro;
         deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
-        magazzini : ARRAY [1..n_mag+1] OF Libreria.inventory;
+        magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
     END_VAR
 
     VAR_EXTERNAL CONSTANT
