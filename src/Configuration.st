@@ -22,47 +22,65 @@ CONFIGURATION MyConfig
         Qdf AT %Q0.1 : BOOL;
         Qts AT %Q0.2 : BOOL;
         
-        Idf AT %IB0 : USINT;
-        Iff AT %I1.0 : BOOL;
-        Isf AT %I1.1 : BOOL;
-        Imf AT %I1.2 : BOOL;
-
-        //input output ennesimo magazzino
-        Qnn AT %Q0.3 : BOOL;
-        Qdn AT %Q0.4 : BOOL;
-        Qtn AT %Q0.5 : BOOL;
-
-        Idn AT %IB2 : USINT;
-        Ifn AT %I3.0 : BOOL;
-        Isn AT %I3.1 : BOOL;
-        Imn AT %I3.2 : BOOL;
+        Idf AT %IB6 : USINT;
+        Iff AT %I0.0 : BOOL;
+        Isf AT %I0.1 : BOOL;
+        Imf AT %I0.2 : BOOL;
 
         //input output coda
-        Qnc AT %Q0.6 : BOOL;
-        Qdc AT %Q0.7 : BOOL;
-        Qtr AT %Q1.0 : BOOL; 
-        
+        Qnc AT %Q0.3 : BOOL;
+        Qdc AT %Q0.4 : BOOL;
+        Qtr AT %Q0.5 : BOOL; 
+                
         Idc AT %IB4 : USINT;
-        Ifc AT %I5.0 : BOOL;
-        Isc AT %I5.1 : BOOL;
-        Ifr AT %I5.2 : BOOL; 
+        Ifc AT %I0.3 : BOOL;
+        Isc AT %I0.4 : BOOL;
+        Ifr AT %I0.5 : BOOL;
+
+        //input output secondo magazzino
+        Qn2 AT %Q0.6 : BOOL;
+        Qd2 AT %Q0.7 : BOOL;
+        Qt2 AT %Q1.0 : BOOL;
+
+        Id2 AT %IB7 : USINT;
+        If2 AT %I0.6 : BOOL;
+        Is2 AT %I0.7 : BOOL;
+        Im2 AT %I1.0 : BOOL;
+
+        //input output terzo magazzino
+        Qn3 AT %Q1.1 : BOOL;
+        Qd3 AT %Q1.2 : BOOL;
+        Qt3 AT %Q1.3 : BOOL;
+
+        Id3 AT %IB8 : USINT;
+        If3 AT %I1.1 : BOOL;
+        Is3 AT %I1.2 : BOOL;
+        Im3 AT %I1.3 : BOOL;
+
+        //input output quarto magazzino
+        Qn4 AT %Q1.4 : BOOL;
+        Qd4 AT %Q1.5 : BOOL;
+        Qt4 AT %Q1.6 : BOOL;
+
+        Id4 AT %IB9 : USINT;
+        If4 AT %I1.4 : BOOL;
+        Is4 AT %I1.5 : BOOL;
+        Im4 AT %I1.6 : BOOL;
+ 
     END_VAR
 
     VAR_GLOBAL
-        nastri : ARRAY[0..n_mag] OF nastro;
-        deviatori : ARRAY[0..n_mag] OF deviatore;
-        magazzini : ARRAY[0..n_mag+1] OF inventory;
+        nastri : ARRAY[1..n_mag] OF nastro;
+        deviatori : ARRAY[1..n_mag] OF deviatore;
+        magazzini : ARRAY[1..n_mag] OF inventory;
         n_pacchi : INT := 10; 
         elapsedtimer : tempo.Timer;
         coloreSim: USINT;
     END_VAR
 
     VAR_GLOBAL CONSTANT
-        n_mag : INT := 3; //7
+        n_mag : INT := 5; // numero magazzini considerando uno feed e uno scarto e il penultimo ricetta o semplice
         capacity : INT := 10;
-
-        maxVal : INT := 7;
-        minVal : INT :=1;
     END_VAR
 
 END_CONFIGURATION
@@ -78,31 +96,155 @@ PROGRAM LoadConfiguration
     END_VAR
 
     VAR_EXTERNAL
-        nastri : ARRAY [0..n_mag] OF Libreria.nastro;
-        deviatori : ARRAY [0..n_mag] OF Libreria.deviatore;
-        magazzini : ARRAY [0..n_mag+1] OF Libreria.inventory;
+        nastri : ARRAY [1..n_mag] OF Libreria.nastro;
+        deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
+        magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
     END_VAR
 
     VAR_EXTERNAL CONSTANT
         n_mag : INT;
         capacity : INT;
-        maxVal : INT ;
-        minVal : INT ;
     END_VAR
 
-        nastri[i].Init(i);
-        deviatori[i].Init(i);
-        coloreq := TO_USINT(i);
-        magazzini[i].Init(capacity,coloreq,i);
+        //feed
+        nastri[1].ID := 1;
+        nastri[1].colore := USINT#0;
+        nastri[1].actualState := stato#stop;
+        nastri[1].CntrlForward := FALSE;
+        nastri[1].CntrlBackward := FALSE;
+        nastri[1].isForward := FALSE;
+        nastri[1].isBackward := FALSE;
 
-    FOR i:=1 TO n_mag DO //inizializzare componenti
-        nastri[i].Init(i);
-        deviatori[i].Init(i);
-        coloreq := TO_USINT(i);
-        magazzini[i].Init(capacity,coloreq,i);
-    END_FOR;
+        deviatori[1].ID:=nastri[1].ID;
+        deviatori[1].sensore := FALSE; 
+        deviatori[1].chiuso := FALSE; 
+        deviatori[1].cntrlApri := FALSE; 
+        deviatori[1].cntrlChiudi := FALSE; 
 
-    magazzini[n_mag+1].Init(capacity,USINT#0,n_mag+1); //se questo è scarto coda non è USINT#0...
+        magazzini[1].ID:=nastri[1].ID;
+        magazzini[1].acceptedColor := USINT#0; // impostare colore
+        magazzini[1].actualState := stato#stop;
+        magazzini[1].CntrlForward := FALSE;
+        magazzini[1].CntrlBackward := FALSE;
+        magazzini[1].isForward := FALSE;
+        magazzini[1].isBackward := FALSE;
+
+        magazzini[1].maxCapacity := Capacity; // impostare capacità desiderata
+        magazzini[1].currentStockLevel:=0;
+        magazzini[1].StockisFull := FALSE;
+        magazzini[1].currentMode := Tipi.InventoryMode#Fill; // di default vogliamo riempire i magazzini
+
+        //coda
+        nastri[n_mag].ID := n_mag;
+        nastri[n_mag].colore := USINT#0;
+        nastri[n_mag].actualState := stato#stop;
+        nastri[n_mag].CntrlForward := FALSE;
+        nastri[n_mag].CntrlBackward := FALSE;
+        nastri[n_mag].isForward := FALSE;
+        nastri[n_mag].isBackward := FALSE;
+
+        deviatori[n_mag].ID:=nastri[n_mag].ID;
+        deviatori[n_mag].sensore := FALSE; 
+        deviatori[n_mag].chiuso := FALSE; 
+        deviatori[n_mag].cntrlApri := FALSE; 
+        deviatori[n_mag].cntrlChiudi := FALSE; 
+
+        magazzini[n_mag].ID:=nastri[n_mag].ID;
+        magazzini[n_mag].acceptedColor := USINT#0; // impostare colore
+        magazzini[n_mag].actualState := stato#stop;
+        magazzini[n_mag].CntrlForward := FALSE;
+        magazzini[n_mag].CntrlBackward := FALSE;
+        magazzini[n_mag].isForward := FALSE;
+        magazzini[n_mag].isBackward := FALSE;
+
+        magazzini[n_mag].maxCapacity := Capacity; // impostare capacità desiderata
+        magazzini[n_mag].currentStockLevel:=0;
+        magazzini[n_mag].StockisFull := FALSE;
+        magazzini[n_mag].currentMode := Tipi.InventoryMode#Fill; // di default vogliamo riempire i magazzini
+
+        //secondo
+        nastri[2].ID := 2;
+        nastri[2].colore := USINT#0;
+        nastri[2].actualState := stato#stop;
+        nastri[2].CntrlForward := FALSE;
+        nastri[2].CntrlBackward := FALSE;
+        nastri[2].isForward := FALSE;
+        nastri[2].isBackward := FALSE;
+
+        deviatori[2].ID:=nastri[2].ID;
+        deviatori[2].sensore := FALSE; 
+        deviatori[2].chiuso := FALSE; 
+        deviatori[2].cntrlApri := FALSE; 
+        deviatori[2].cntrlChiudi := FALSE; 
+
+        magazzini[2].ID:=nastri[2].ID;
+        magazzini[2].acceptedColor := USINT#0; // impostare colore
+        magazzini[2].actualState := stato#stop;
+        magazzini[2].CntrlForward := FALSE;
+        magazzini[2].CntrlBackward := FALSE;
+        magazzini[2].isForward := FALSE;
+        magazzini[2].isBackward := FALSE;
+
+        magazzini[2].maxCapacity := Capacity; // impostare capacità desiderata
+        magazzini[2].currentStockLevel:=0;
+        magazzini[2].StockisFull := FALSE;
+        magazzini[2].currentMode := Tipi.InventoryMode#Fill; // di default vogliamo riempire i magazzini
+
+        //terzo
+        nastri[3].ID := 3;
+        nastri[3].colore := USINT#0;
+        nastri[3].actualState := stato#stop;
+        nastri[3].CntrlForward := FALSE;
+        nastri[3].CntrlBackward := FALSE;
+        nastri[3].isForward := FALSE;
+        nastri[3].isBackward := FALSE;
+
+        deviatori[3].ID:=nastri[3].ID;
+        deviatori[3].sensore := FALSE; 
+        deviatori[3].chiuso := FALSE; 
+        deviatori[3].cntrlApri := FALSE; 
+        deviatori[3].cntrlChiudi := FALSE; 
+
+        magazzini[3].ID:=nastri[3].ID;
+        magazzini[3].acceptedColor := USINT#0; // impostare colore
+        magazzini[3].actualState := stato#stop;
+        magazzini[3].CntrlForward := FALSE;
+        magazzini[3].CntrlBackward := FALSE;
+        magazzini[3].isForward := FALSE;
+        magazzini[3].isBackward := FALSE;
+
+        magazzini[3].maxCapacity := Capacity; // impostare capacità desiderata
+        magazzini[3].currentStockLevel:=0;
+        magazzini[3].StockisFull := FALSE;
+        magazzini[3].currentMode := Tipi.InventoryMode#Fill; // di default vogliamo riempire i magazzini
+
+        //quarto o ricetta
+        nastri[4].ID := 4;
+        nastri[4].colore := USINT#0;
+        nastri[4].actualState := stato#stop;
+        nastri[4].CntrlForward := FALSE;
+        nastri[4].CntrlBackward := FALSE;
+        nastri[4].isForward := FALSE;
+        nastri[4].isBackward := FALSE;
+
+        deviatori[4].ID:=nastri[4].ID;
+        deviatori[4].sensore := FALSE; 
+        deviatori[4].chiuso := FALSE; 
+        deviatori[4].cntrlApri := FALSE; 
+        deviatori[4].cntrlChiudi := FALSE; 
+
+        magazzini[4].ID:=nastri[4].ID;
+        magazzini[4].acceptedColor := USINT#0; // impostare colore
+        magazzini[4].actualState := stato#stop;
+        magazzini[4].CntrlForward := FALSE;
+        magazzini[4].CntrlBackward := FALSE;
+        magazzini[4].isForward := FALSE;
+        magazzini[4].isBackward := FALSE;
+
+        magazzini[4].maxCapacity := Capacity; // impostare capacità desiderata
+        magazzini[4].currentStockLevel:=0;
+        magazzini[4].StockisFull := FALSE;
+        magazzini[4].currentMode := Tipi.InventoryMode#Fill; // di default vogliamo riempire i magazzini
 
 END_PROGRAM
 

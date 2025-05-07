@@ -5,37 +5,49 @@ USING System.Timer;
 PROGRAM MainProgram
 
     VAR_external
-        nastri : ARRAY [0..3] OF Libreria.nastro;
-        deviatori : ARRAY [0..3] OF Libreria.deviatore;
-        magazzini : ARRAY [0..4] OF Libreria.inventory;
+        nastri : ARRAY [1..n_mag] OF Libreria.nastro;
+        deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
+        magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
         coloreSim : USINT;
     END_VAR
 
     VAR_external
-
         Qnf : BOOL;
         Qdf : BOOL;
         Qts : BOOL;
-        Iff : BOOL;
         Idf : USINT;
+        Iff : BOOL;
         Isf : BOOL;
         Imf : BOOL;
-
-        Qnn : BOOL;
-        Qdn : BOOL;
-        Qtn : BOOL;
-        Ifn : BOOL;
-        Idn : USINT;
-        Isn : BOOL;
-        Imn : BOOL;
-
         Qnc : BOOL;
         Qdc : BOOL;
         Qtr : BOOL;
-        Ifc : BOOL;
         Idc : USINT;
+        Ifc : BOOL;
         Isc : BOOL;
         Ifr : BOOL;
+        Qn2 : BOOL;
+        Qd2 : BOOL;
+        Qt2 : BOOL;
+        Id2 : USINT;
+        If2 : BOOL;
+        Is2 : BOOL;
+        Im2 : BOOL;
+        Qn3 : BOOL;
+        Qd3 : BOOL;
+        Qt3 : BOOL;
+        Id3 : USINT;
+        If3 : BOOL;
+        Is3 : BOOL;
+        Im3 : BOOL;
+        Qn4 : BOOL;
+        Qd4 : BOOL;
+        Qt4 : BOOL;
+        Id4 : USINT;
+        If4 : BOOL;
+        Is4 : BOOL;
+        Im4 : BOOL;
+        elapsedtimer : tempo.Timer;
     END_VAR
     
     VAR
@@ -47,6 +59,7 @@ PROGRAM MainProgram
 
     VAR_external CONSTANT 
         n_mag: int;
+        capacity : INT;
     END_VAR
 
     VAR_TEMP
@@ -66,7 +79,7 @@ PROGRAM MainProgram
             fineProcesso := TRUE;
         END_IF;
 
-        WHILE i<n_mag+1 DO
+        WHILE i<n_mag DO
 
             Simulazione();
             Qnf := nastri[i].RunForward();
@@ -94,6 +107,7 @@ PROGRAM MainProgram
                     magazzini[i].isEmpty := magazzini[i].CheckEmpty(Iff);// controlla se il nastro ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
                     Simulazione();
+                    Qts := magazzini[i].Stop();
 
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
                     magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel()+1; //lo spazio del magazzino cala
