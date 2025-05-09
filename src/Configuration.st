@@ -82,14 +82,17 @@ CONFIGURATION MyConfig
 
         deviatori : ARRAY[1..n_mag] OF deviatore;
         magazzini : ARRAY[1..n_mag] OF inventory;
-        n_pacchi : INT := 10; 
+        n_pacchi : INT:=20; 
         elapsedtimer : tempo.Timer;
         coloreSim: USINT;
+        flag : BOOL := FALSE;
+        fineProcesso: BOOL := FALSE;
     END_VAR
 
     VAR_GLOBAL CONSTANT
         n_mag : INT := 5; // numero magazzini considerando uno feed e uno scarto e il penultimo ricetta o semplice
-        capacity : INT := 10;
+        capacity : INT := 5;
+        tStopMotor : Time := T#5s;//tempo movimento motori
     END_VAR
     
 
@@ -156,6 +159,7 @@ PROGRAM LoadConfiguration
         n_pacchi : INT;
         elapsedtimer : tempo.Timer;
         coloreSim : USINT;
+        
     END_VAR
 
     VAR_EXTERNAL CONSTANT
@@ -264,7 +268,7 @@ PROGRAM LoadConfiguration
 
         //secondo
         nastri[2].ID := 2;
-        nastri[2].colore := USINT#0;
+        nastri[2].colore := USINT#1;
         nastri[2].actualState := stato#stop;
         nastri[2].CntrlForward := FALSE;
         nastri[2].CntrlBackward := FALSE;
@@ -278,7 +282,7 @@ PROGRAM LoadConfiguration
         deviatori[2].cntrlChiudi := FALSE; 
 
         magazzini[2].ID:=nastri[2].ID;
-        magazzini[2].acceptedColor := USINT#0; // impostare colore
+        magazzini[2].acceptedColor := USINT#1; // impostare colore
         magazzini[2].actualState := stato#stop;
         magazzini[2].CntrlForward := FALSE;
         magazzini[2].CntrlBackward := FALSE;
@@ -292,7 +296,7 @@ PROGRAM LoadConfiguration
 
         //terzo
         nastri[3].ID := 3;
-        nastri[3].colore := USINT#0;
+        nastri[3].colore := USINT#2;
         nastri[3].actualState := stato#stop;
         nastri[3].CntrlForward := FALSE;
         nastri[3].CntrlBackward := FALSE;
@@ -306,7 +310,7 @@ PROGRAM LoadConfiguration
         deviatori[3].cntrlChiudi := FALSE; 
 
         magazzini[3].ID:=nastri[3].ID;
-        magazzini[3].acceptedColor := USINT#0; // impostare colore
+        magazzini[3].acceptedColor := USINT#2; // impostare colore
         magazzini[3].actualState := stato#stop;
         magazzini[3].CntrlForward := FALSE;
         magazzini[3].CntrlBackward := FALSE;
@@ -320,7 +324,7 @@ PROGRAM LoadConfiguration
 
         //quarto o ricetta
         nastri[4].ID := 4;
-        nastri[4].colore := USINT#0;
+        nastri[4].colore := USINT#3;
         nastri[4].actualState := stato#stop;
         nastri[4].CntrlForward := FALSE;
         nastri[4].CntrlBackward := FALSE;
@@ -334,7 +338,7 @@ PROGRAM LoadConfiguration
         deviatori[4].cntrlChiudi := FALSE; 
 
         magazzini[4].ID:=nastri[4].ID;
-        magazzini[4].acceptedColor := USINT#0; // impostare colore
+        magazzini[4].acceptedColor := USINT#3; // impostare colore
         magazzini[4].actualState := stato#stop;
         magazzini[4].CntrlForward := FALSE;
         magazzini[4].CntrlBackward := FALSE;

@@ -6,7 +6,7 @@ NAMESPACE Libreria
     CLASS PUBLIC Inventory EXTENDS nastro 
         VAR PUBLIC
             IDpackage: INT;
-            ListStoredPackages: ARRAY[1..100] OF USINT; //dato che un magazzino deve avere pacchi dello stesso colore, può servire per controllare che tutti i pacchi inseriti abbiano effettivamente lo stesso colore
+            ListStoredPackages: ARRAY[1..3] OF USINT; //dato che un magazzino deve avere pacchi dello stesso colore, può servire per controllare che tutti i pacchi inseriti abbiano effettivamente lo stesso colore
             currentStockLevel: INT; //livello di stock attuale
             maxCapacity: INT; //capacità massima
             acceptedColor: USINT;
