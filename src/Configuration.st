@@ -18,24 +18,24 @@ CONFIGURATION MyConfig
     VAR_GLOBAL  //DESCRIZIONI MESSE DA ALE CHE NON è SICURO <-------------
         
         //input output feed
-        Qnf AT %Q0.0 : BOOL;
-        Qdf AT %Q0.1 : BOOL;
-        Qts AT %Q0.2 : BOOL;
+        Qnf AT %Q0.0 : BOOL; //output nastro feed
+        Qdf AT %Q0.1 : BOOL; //output deviatore feed
+        Qtf AT %Q0.2 : BOOL; //output tank feed
 
-        Idf AT %IB6 : USINT;
-        Iff AT %I0.0 : BOOL;
-        Isf AT %I0.1 : BOOL;
-        Imf AT %I0.2 : BOOL;
+        Idf AT %IB6 : USINT; //input deviatore feed (colore)
+        Iff AT %I0.0 : BOOL; //input fotocellula feed
+        Isf AT %I0.1 : BOOL; //input sensore feed (vedi slides)
+        Imf AT %I0.2 : BOOL; //input magazzino feed
 
         //input output coda
         Qnc AT %Q0.3 : BOOL; //output nastro principale coda (false -> fermo, true -> avanti)
         Qdc AT %Q0.4 : BOOL; //output deviatore coda (false -> apri e lascia passare il pacco, true -> chiudi e devia il pacco verso il magazzino)
-        Qtr AT %Q0.5 : BOOL; //output nastro del magazzino scarto coda (false -> fermo, true -> avanti)                                                     
+        Qtc AT %Q0.5 : BOOL; //output nastro del magazzino scarto coda (false -> fermo, true -> avanti)                                                     
                 
         Idc AT %IB4 : USINT; //input colore pacco sul nastro principale coda (0=undefined, 1=red, 2=orange, 3=yellow, 4=green, 5=blue, 6=indigo, 7=violet)
         Ifc AT %I0.3 : BOOL; //input presenza pacco sul nastro principale coda (false=assente, true=presente)
         Isc AT %I0.4 : BOOL; //input presenza pacco sul nastro del magazzino scarto coda (false=assente, true=presente)
-        Ifr AT %I0.5 : BOOL; //input pacco arrivato al magazzino scarto coda (false=non arrivato, true=arrivato)                                                 
+        Imc AT %I0.5 : BOOL; //input pacco arrivato al magazzino scarto coda (false=non arrivato, true=arrivato)                                                 
 
         //input e output secondo magazzino (pacchi red)
         Qn2 AT %Q0.6 : BOOL; //output nastro principale 2 (false -> fermo, true -> avanti)
@@ -223,7 +223,8 @@ PROGRAM LoadConfiguration
         deviatori[1].sensore := FALSE; 
         deviatori[1].chiuso := FALSE; 
         deviatori[1].cntrlApri := FALSE; 
-        deviatori[1].cntrlChiudi := FALSE; 
+        deviatori[1].cntrlChiudi := FALSE;
+        deviatori[1].color:=USINT#0; //colre magazzino feed (da aggiornare con TUTTI i colori che non sono appartenenti ad un magazzino colore)
 
         magazzini[1].ID:=nastri[1].ID;
         magazzini[1].acceptedColor := USINT#0; // impostare colore
@@ -252,6 +253,8 @@ PROGRAM LoadConfiguration
         deviatori[n_mag].chiuso := FALSE; 
         deviatori[n_mag].cntrlApri := FALSE; 
         deviatori[n_mag].cntrlChiudi := FALSE; 
+        deviatori[n_mag].color:=USINT#0;
+
 
         magazzini[n_mag].ID:=nastri[n_mag].ID;
         magazzini[n_mag].acceptedColor := USINT#0; // impostare colore
@@ -280,6 +283,8 @@ PROGRAM LoadConfiguration
         deviatori[2].chiuso := FALSE; 
         deviatori[2].cntrlApri := FALSE; 
         deviatori[2].cntrlChiudi := FALSE; 
+        deviatori[2].color:=USINT#1;
+
 
         magazzini[2].ID:=nastri[2].ID;
         magazzini[2].acceptedColor := USINT#1; // impostare colore
@@ -308,6 +313,8 @@ PROGRAM LoadConfiguration
         deviatori[3].chiuso := FALSE; 
         deviatori[3].cntrlApri := FALSE; 
         deviatori[3].cntrlChiudi := FALSE; 
+        deviatori[3].color:=USINT#2;
+
 
         magazzini[3].ID:=nastri[3].ID;
         magazzini[3].acceptedColor := USINT#2; // impostare colore
@@ -336,6 +343,8 @@ PROGRAM LoadConfiguration
         deviatori[4].chiuso := FALSE; 
         deviatori[4].cntrlApri := FALSE; 
         deviatori[4].cntrlChiudi := FALSE; 
+        deviatori[4].color:=USINT#3;
+
 
         magazzini[4].ID:=nastri[4].ID;
         magazzini[4].acceptedColor := USINT#3; // impostare colore

@@ -68,9 +68,9 @@ PROGRAM MainProgram
         i:INT;
     END_VAR
     
-    IF n_pacchi<0 THEN //se non ci sono pacchi fine smistamento
+    /*IF n_pacchi<0 THEN //se non ci sono pacchi fine smistamento
         fineProcesso := TRUE;
-    END_IF;
+    END_IF;*/
 
     WHILE NOT(fineProcesso) DO //finche ci sono pacchi da smistare 
         i:=1;
@@ -87,10 +87,12 @@ PROGRAM MainProgram
             Qn[i] := nastri[i].RunForward();
             nastri[i].isEmpty := nastri[i].CheckEmpty(If_[i]);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
-            IF elapsedtimer.Check(Qn[i],tStopMotor) THEN
-                If_[i] := FALSE;// spegni fotocellula del nastro
-                Is[i] := TRUE;// accendi sensore
-            END_IF;
+            
+            WHILE NOT elapsedtimer.Check(Qn[i],tStopMotor) DO
+                ;
+            END_WHILE;
+            If_[i] := FALSE;// spegni fotocellula del nastro
+            Is[i] := TRUE;// accendi sensore (prima del deviatore)
             
             IF Is[i] THEN
             Qn[i] := nastri[i].Stop();
@@ -98,8 +100,8 @@ PROGRAM MainProgram
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
-            IF deviatori[i].IsMycolor(Id[i]) = TRUE THEN // controllato se il pacco è da smistare
-                
+            IF deviatori[i].IsMycolor(USINT#1) = TRUE THEN // controllato se il pacco è da smistare
+                //Id[i]
                 IF magazzini[i].StockisFull THEN
                     deviatori[i].Discard();
                 ELSE
@@ -134,7 +136,11 @@ PROGRAM MainProgram
             END_IF;
 
             i:=i+1;
-        
+
+            IF n_pacchi = 0 THEN
+                fineProcesso := TRUE;
+            END_IF;
+
         END_WHILE;
 
         IF i=n_mag AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
@@ -149,5 +155,4 @@ PROGRAM MainProgram
         
         
     END_WHILE;
-
 END_PROGRAM

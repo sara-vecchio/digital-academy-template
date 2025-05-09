@@ -4,14 +4,19 @@
 ## The information about Configuration File could be found on https://console.simatic-ax.siemens.io/docs/tracing/configuration-file
 
 ## The desired name of the trace job.
-name: example
+name: inventory_stocklevel
 
 ## The type of the trace job - can be finite or perpetual
 jobType: perpetual #finite
 
 ## An array of signals to be traced.
 signals:
- - Tag1
+ - magazzini[1].currentStockLevel
+ - magazzini[2].currentStockLevel
+ - magazzini[3].currentStockLevel
+ - magazzini[4].currentStockLevel
+ - magazzini[5].currentStockLevel
+ 
  
 
 ## The checkPoint group contains settings to configure capture of a sample

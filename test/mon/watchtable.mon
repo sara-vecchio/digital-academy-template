@@ -11,3 +11,9 @@ magazzini[3].currentStockLevel
 magazzini[4].currentStockLevel
 magazzini[5].currentStockLevel
 
+Qn
+
+magazzini[2].StockisFull
+
+deviatori[2].IsMycolor(Id[i])
+If_
