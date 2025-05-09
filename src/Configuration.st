@@ -15,12 +15,12 @@ CONFIGURATION MyConfig
     PROGRAM P2 WITH PackagesIn: RandPack;
 
     // Configuring IO tags    
-    VAR_GLOBAL
+    VAR_GLOBAL  //DESCRIZIONI MESSE DA ALE CHE NON è SICURO <-------------
         
         //input output feed
         Qnf AT %Q0.0 : BOOL;
         Qdf AT %Q0.1 : BOOL;
-        Qtf AT %Q0.2 : BOOL;
+        Qts AT %Q0.2 : BOOL;
 
         Idf AT %IB6 : USINT;
         Iff AT %I0.0 : BOOL;
@@ -28,39 +28,39 @@ CONFIGURATION MyConfig
         Imf AT %I0.2 : BOOL;
 
         //input output coda
-        Qnc AT %Q0.3 : BOOL;
-        Qdc AT %Q0.4 : BOOL;
-        Qtc AT %Q0.5 : BOOL; 
+        Qnc AT %Q0.3 : BOOL; //output nastro principale coda (false -> fermo, true -> avanti)
+        Qdc AT %Q0.4 : BOOL; //output deviatore coda (false -> apri e lascia passare il pacco, true -> chiudi e devia il pacco verso il magazzino)
+        Qtr AT %Q0.5 : BOOL; //output nastro del magazzino scarto coda (false -> fermo, true -> avanti)                                                     
                 
-        Idc AT %IB4 : USINT;
-        Ifc AT %I0.3 : BOOL;
-        Isc AT %I0.4 : BOOL;
-        Imc AT %I0.5 : BOOL;
+        Idc AT %IB4 : USINT; //input colore pacco sul nastro principale coda (0=undefined, 1=red, 2=orange, 3=yellow, 4=green, 5=blue, 6=indigo, 7=violet)
+        Ifc AT %I0.3 : BOOL; //input presenza pacco sul nastro principale coda (false=assente, true=presente)
+        Isc AT %I0.4 : BOOL; //input presenza pacco sul nastro del magazzino scarto coda (false=assente, true=presente)
+        Ifr AT %I0.5 : BOOL; //input pacco arrivato al magazzino scarto coda (false=non arrivato, true=arrivato)                                                 
 
-        //input output secondo magazzino
-        Qn2 AT %Q0.6 : BOOL;
-        Qd2 AT %Q0.7 : BOOL;
-        Qt2 AT %Q1.0 : BOOL;
+        //input e output secondo magazzino (pacchi red)
+        Qn2 AT %Q0.6 : BOOL; //output nastro principale 2 (false -> fermo, true -> avanti)
+        Qd2 AT %Q0.7 : BOOL; //output deviatore 2 (false -> apri e lascia passare il pacco, true -> chiudi e devia il pacco verso il magazzino)
+        Qt2 AT %Q1.0 : BOOL; //output nastro del magazzino 2 (come decido se va avanti, indietro o sta fermo se è BOOL???)    
 
-        Id2 AT %IB7 : USINT;
-        If2 AT %I0.6 : BOOL;
-        Is2 AT %I0.7 : BOOL;
-        Im2 AT %I1.0 : BOOL;
+        Id2 AT %IB7 : USINT; //input colore pacco sul nastro principale 2 (0=undefined, 1=red, 2=orange, 3=yellow, 4=green, 5=blue, 6=indigo, 7=violet)
+        If2 AT %I0.6 : BOOL; //input presenza pacco sul nastro principale 2 (false=assente, true=presente)
+        Is2 AT %I0.7 : BOOL; //input presenza pacco sul nastro del magazzino 2 (false=assente, true=presente)
+        Im2 AT %I1.0 : BOOL; //input pacco arrivato al magazzino 2 (false=non arrivato, true=arrivato)
 
-        //input output terzo magazzino
+        //input e output terzo magazzino (pacchi orange)
         Qn3 AT %Q1.1 : BOOL;
         Qd3 AT %Q1.2 : BOOL;
-        Qt3 AT %Q1.3 : BOOL;
+        Qt3 AT %Q1.3 : BOOL; // <-------------- stesso problema di qt2
 
         Id3 AT %IB8 : USINT;
         If3 AT %I1.1 : BOOL;
         Is3 AT %I1.2 : BOOL;
         Im3 AT %I1.3 : BOOL;
 
-        //input output quarto magazzino
+        //input e output quarto magazzino (pacchi yellow)
         Qn4 AT %Q1.4 : BOOL;
         Qd4 AT %Q1.5 : BOOL;
-        Qt4 AT %Q1.6 : BOOL;
+        Qt4 AT %Q1.6 : BOOL; // <-------------- stesso problema di qt2
 
         Id4 AT %IB9 : USINT;
         If4 AT %I1.4 : BOOL;
