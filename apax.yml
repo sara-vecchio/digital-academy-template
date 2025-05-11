@@ -117,7 +117,7 @@ scripts:
   # - apax uninstallopcuaserver
   # - apax installopcuaserver
 
-  #monitor: apax mon --targetIP $IP_ADDRESS --certificate $TLS_CONNECT_CERTFILE --file ./test/mon/watchtable.mon --continuously
+  monitor: apax mon --targetIP $IP_ADDRESS --certificate $TLS_CONNECT_CERTFILE --file ./test/mon/watchtable.mon --continuously
   #loginaxwithoutbrowser: apax login --registry https://registry.simatic-ax.siemens.io --password 
   #updatecatalog: apax update --catalog @ax/simatic-ax
   logingithub: apax login --registry https://npm.pkg.github.com/ --password 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

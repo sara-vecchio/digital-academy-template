@@ -15,6 +15,8 @@ PROGRAM MainProgram
         If_ : ARRAY[1..n_mag] of BOOL ;
         Is : ARRAY[1..n_mag] of BOOL ;
         Im : ARRAY[1..n_mag] of BOOL ;
+        ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT;
+        ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT;
     END_VAR
 
     VAR_external
@@ -62,6 +64,7 @@ PROGRAM MainProgram
     VAR_external CONSTANT 
         n_mag: int;
         tStopMotor : Time;
+        n_pacchi_max : INT;
     END_VAR
 
     VAR_TEMP
@@ -100,7 +103,9 @@ PROGRAM MainProgram
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
-            IF deviatori[i].IsMycolor(USINT#1) = TRUE THEN // controllato se il pacco è da smistare
+            //Id[1]:=ListaPacchi2[n_pacchi_max-n_pacchi+1];
+            Id[1]:=ListaPacchi[n_pacchi_max-n_pacchi+1];
+            IF deviatori[i].IsMycolor(Id[i]) = TRUE THEN // controllato se il pacco è da smistare
                 //Id[i]
                 IF magazzini[i].StockisFull THEN
                     deviatori[i].Discard();
@@ -120,6 +125,11 @@ PROGRAM MainProgram
                     magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
+                    Id[1]  := USINT#0;
+                    Id[2]  := USINT#0;
+                    Id[3]  := USINT#0;
+                    Id[4]  := USINT#0;
+                    Id[5]  := USINT#0;
                     magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel()+1; //lo spazio del magazzino cala
                     magazzini[i].isFull();
                     

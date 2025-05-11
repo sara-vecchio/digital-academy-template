@@ -89,7 +89,7 @@ NAMESPACE Libreria
             ELSE // the mode is set to "empty"
                 IF recipe.RecipeSatisfiable()=TRUE THEN //AND currentStockLevel > 0 THEN
                     statomotore := Tipi.stato#backward;
-                    this.EmptyFIFO(); //potete commentare questa riga mentre trovo una soluzione all'errore
+                    THIS.EmptyFIFO();
                 END_IF;
             END_IF;            
         END_METHOD             

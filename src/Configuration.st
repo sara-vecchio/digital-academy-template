@@ -7,8 +7,8 @@ USING System.Timer;
 CONFIGURATION MyConfig
 
     TASK Load: Startup;
-    TASK Main(PRIORITY:=1);
-    TASK PackagesIn(PRIORITY:=0);
+    TASK Main(Interval := T#1000ms,PRIORITY:=1); //di default è 50ms (minimo)
+    TASK PackagesIn(Interval:= T#1s, PRIORITY:=1);//ogni 1s genera un pacco
     
     PROGRAM P0 WITH Load: LoadConfiguration; 
     PROGRAM P1 WITH Main: MainProgram;
@@ -84,15 +84,17 @@ CONFIGURATION MyConfig
         magazzini : ARRAY[1..n_mag] OF inventory;
         n_pacchi : INT:=20; 
         elapsedtimer : tempo.Timer;
-        coloreSim: USINT;
         flag : BOOL := FALSE;
         fineProcesso: BOOL := FALSE;
+        ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT; 
+        ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT:=[USINT#1,USINT#1,USINT#1,USINT#1,USINT#1,USINT#2,USINT#2,USINT#2,USINT#2,USINT#2,USINT#3,USINT#3,USINT#3,USINT#3,USINT#3,USINT#0,USINT#0,USINT#0,USINT#0,USINT#0 ]; 
     END_VAR
 
     VAR_GLOBAL CONSTANT
         n_mag : INT := 5; // numero magazzini considerando uno feed e uno scarto e il penultimo ricetta o semplice
         capacity : INT := 5;
         tStopMotor : Time := T#5s;//tempo movimento motori
+        n_pacchi_max : INT:=20; 
     END_VAR
     
 
@@ -156,15 +158,15 @@ PROGRAM LoadConfiguration
         If4 : BOOL;
         Is4 : BOOL;
         Im4 : BOOL;
-        n_pacchi : INT;
+        //n_pacchi : INT;
         elapsedtimer : tempo.Timer;
-        coloreSim : USINT;
         
     END_VAR
 
     VAR_EXTERNAL CONSTANT
         n_mag : INT;
         capacity : INT;
+        n_pacchi : INT;
     END_VAR
 
 
@@ -365,30 +367,33 @@ END_PROGRAM
 PROGRAM RandPack
     VAR
         PackOnDelay : OnDelay;
-        deltaT: LTIME;
         triggerSuccess : BOOL;
-        RandomSeed : INT := 12;
-        coloreIngresso: colore;
-        //enable : BOOL := TRUE;
+        RandomSeed : INT:=1;
+        coloreIngresso: USINT;
+        pacchi_creati: INT:=0;
     END_VAR
-
-    VAR_EXTERNAL
-        coloreSim : USINT;
-    END_VAR
-
-    PackOnDelay(signal := TRUE, duration := LTIME#5S); // Timer ogni 5 secondi per simulare l’arrivo di un pacco
-    deltaT := PackOnDelay.elapsedTime;
-    triggerSuccess := PackOnDelay.output;
-
-    //timeAccumulator(enable := enable, previous := deltaT);
     
-    IF triggerSuccess THEN //output diventa automaticamente TRUE se sono passati 5s
-        deltaT := LTIME#0MS; //reset   
+    VAR_EXTERNAL CONSTANT
+        n_pacchi_max : INT;
+        ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT; 
+    END_VAR
+
+WHILE  pacchi_creati<n_pacchi_max DO //serve effettivamente questo while?
+    PackOnDelay(signal := pacchi_creati<n_pacchi_max, duration := T#50ms); // se dopo 50ms signal è ancora TRUE, l'output diventa TRUE
+    triggerSuccess := PackOnDelay.output;
+    
+    IF triggerSuccess AND pacchi_creati<n_pacchi_max THEN
         // Simula colore random tra 0 e 7
         RandomSeed := (RandomSeed * 37 + 91) MOD 1000;
         coloreIngresso := TO_USINT(RandomSeed MOD 8); //MOD 8 limita il numero tra 0 e 7
 
-        coloreSim:= coloreIngresso; //aggiorno una variabile globale che posso usare nel MainProgram o altrove
+        IF coloreIngresso>USINT#7 THEN
+            coloreIngresso:=USINT#0;
+        END_IF;
+
+        ListaPacchi[pacchi_creati + 1] := coloreIngresso;
+        pacchi_creati := pacchi_creati + 1;
     END_IF; 
+END_WHILE;
 
 END_PROGRAM
