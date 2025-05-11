@@ -99,7 +99,7 @@ scripts:
   # Compile the hardware description (input:sources) to target specific data (output:binaries) and update the IO- and HwIdent mapping (SystemConstants)
   hw_compile: hwc compile --input $HW_DECLARATION --output $HW_BIN_FOLDER
   # load the target specific hardware data (binaries) to the PLC
-  hw_load: hwld --input $HW_BIN_FOLDER/$PLC_Name -t $IP_ADDRESS --accept-security-disclaimer -C $TLS_CONNECT_CERTFILE -M:$MASTER_PW --restart # se la voglio mandare in run direttamente
+  hw_load: hwld --input $HW_BIN_FOLDER/$PLC_Name -t 192.168.0.1 --accept-security-disclaimer -C $TLS_CONNECT_CERTFILE -M:$MASTER_PW #--restart # se la voglio mandare in run direttamente ######NOTA BENE: SE CREIAMO UNA ISTANZA "PLCSIM" DOBBIAMO SPECIFICARE -t 192.168.0.1 (indirizzo IP dell'istanza), che dopo si sistema facendo un apax hw_load. Solo dopo rimettere -t $IP_ADDRESS e riabilitare --restart  ALTRIMENTI CON UNA ISTANZA "TCP/IP SINGLE ADAPTER" va messo -t $IP_ADDRESS #####
   # Call 'apax load' to download the builded program to the target. An 'apax build' might be required upfront
   load: apax sld load --input $SW_BIN_FOLDER -t $IP_ADDRESS  --restart --accept-security-disclaimer --log debug -C $TLS_CONNECT_CERTFILE
   # Call 'apax dlplc' to build and download the application to the target
@@ -117,7 +117,7 @@ scripts:
   # - apax uninstallopcuaserver
   # - apax installopcuaserver
 
-  #monitor: apax mon --targetIP $IP_ADDRESS --certificate $TLS_CONNECT_CERTFILE --file ./test/mon/watchtable.mon --continuously
+  monitor: apax mon --targetIP $IP_ADDRESS --certificate $TLS_CONNECT_CERTFILE --file ./test/mon/watchtable.mon --continuously
   #loginaxwithoutbrowser: apax login --registry https://registry.simatic-ax.siemens.io --password 
   #updatecatalog: apax update --catalog @ax/simatic-ax
   logingithub: apax login --registry https://npm.pkg.github.com/ --password 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
