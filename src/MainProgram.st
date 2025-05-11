@@ -8,12 +8,21 @@ PROGRAM MainProgram
         nastri : ARRAY [1..n_mag] OF Libreria.nastro;
         deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
         magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
+        Qn : ARRAY[1..n_mag] of BOOL ;
+        Qd : ARRAY[1..n_mag] of BOOL ;
+        Qt : ARRAY[1..n_mag] of BOOL ;
+        Id : ARRAY[1..n_mag] of USINT ;
+        If_ : ARRAY[1..n_mag] of BOOL ;
+        Is : ARRAY[1..n_mag] of BOOL ;
+        Im : ARRAY[1..n_mag] of BOOL ;
+        ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT;
+        ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT;
     END_VAR
 
     VAR_external
         Qnf : BOOL;
         Qdf : BOOL;
-        Qts : BOOL;
+        Qtf : BOOL;
         Idf : USINT;
         Iff : BOOL;
         Isf : BOOL;
@@ -47,53 +56,46 @@ PROGRAM MainProgram
         Is4 : BOOL;
         Im4 : BOOL;
         elapsedtimer : tempo.Timer;
-    END_VAR
-
-   
-
-    VAR 
-        tStopMotor : Time;//tempo movimento motori
-    END_VAR
-    
-    VAR
-        fineProcesso: BOOL := FALSE;
-        tempotrascorso: BOOL := FALSE;
-        flag : BOOL := FALSE;
-        run_time : TIME;
+        flag : BOOL;
+        fineProcesso: BOOL;
+        n_pacchi : INT;
     END_VAR
 
     VAR_external CONSTANT 
         n_mag: int;
-        capacity : INT;
+        tStopMotor : Time;
+        n_pacchi_max : INT;
     END_VAR
 
     VAR_TEMP
         i:INT;
-        n_pacchi :INT;
     END_VAR
     
-    IF n_pacchi<=0 THEN //se non ci sono pacchi fine smistamento
-        fineProcesso:= TRUE;
-    END_IF;
+    /*IF n_pacchi<0 THEN //se non ci sono pacchi fine smistamento
+        fineProcesso := TRUE;
+    END_IF;*/
 
     WHILE NOT(fineProcesso) DO //finche ci sono pacchi da smistare 
         i:=1;
-        Flag := FALSE;
+        flag := FALSE;
 
         IF n_pacchi = 0 THEN
             fineProcesso := TRUE;
         END_IF;
 
+        
         WHILE i<n_mag DO
 
-            Simulazione();
+            //Simulazione();
             Qn[i] := nastri[i].RunForward();
             nastri[i].isEmpty := nastri[i].CheckEmpty(If_[i]);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
-            IF elapsedtimer.Check(Qn[i],tStopMotor) THEN
-                If_[i] := FALSE;// spegni fotocellula del nastro
-                Is[i] := TRUE;// accendi sensore
-            END_IF;
+            
+            WHILE NOT elapsedtimer.Check(Qn[i],tStopMotor) DO
+                ;
+            END_WHILE;
+            If_[i] := FALSE;// spegni fotocellula del nastro
+            Is[i] := TRUE;// accendi sensore (prima del deviatore)
             
             IF Is[i] THEN
             Qn[i] := nastri[i].Stop();
@@ -101,8 +103,10 @@ PROGRAM MainProgram
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
-            IF deviatori[i].IsMycolor(Id[i]) THEN // controllato se il pacco è da smistare
-                
+            //Id[1]:=ListaPacchi2[n_pacchi_max-n_pacchi+1];
+            Id[1]:=ListaPacchi[n_pacchi_max-n_pacchi+1];
+            IF deviatori[i].IsMycolor(Id[i]) = TRUE THEN // controllato se il pacco è da smistare
+                //Id[i]
                 IF magazzini[i].StockisFull THEN
                     deviatori[i].Discard();
                 ELSE
@@ -117,21 +121,36 @@ PROGRAM MainProgram
                         Im[i] := FALSE;
                     END_IF;
                     Qt[i] := magazzini[i].Stop();
-
+                    magazzini[i].update();//aggiorna lo stato del nastro magazzino
+                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
+                    magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
+                    Id[1]  := USINT#0;
+                    Id[2]  := USINT#0;
+                    Id[3]  := USINT#0;
+                    Id[4]  := USINT#0;
+                    Id[5]  := USINT#0;
                     magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel()+1; //lo spazio del magazzino cala
                     magazzini[i].isFull();
                     
                     flag:=TRUE;// flag per segnare che i pacchi sono già stati ridotti
-                    
                     i:=n_mag;
 
                 END_IF;
 
+
+            ELSE
+
+            Id[i+1] := Id[i];
+
             END_IF;
 
             i:=i+1;
-        
+
+            IF n_pacchi = 0 THEN
+                fineProcesso := TRUE;
+            END_IF;
+
         END_WHILE;
 
         IF i=n_mag AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
@@ -143,7 +162,7 @@ PROGRAM MainProgram
                 fineProcesso := TRUE; //esci dal ciclo perche non posso più caricare
             END_IF;
         END_IF;
-
+        
+        
     END_WHILE;
-
 END_PROGRAM

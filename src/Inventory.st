@@ -6,7 +6,7 @@ NAMESPACE Libreria
     CLASS PUBLIC Inventory EXTENDS nastro 
         VAR PUBLIC
             IDpackage: INT;
-            ListStoredPackages: ARRAY[1..100] OF USINT; //dato che un magazzino deve avere pacchi dello stesso colore, può servire per controllare che tutti i pacchi inseriti abbiano effettivamente lo stesso colore
+            ListStoredPackages: ARRAY[1..3] OF USINT; //dato che un magazzino deve avere pacchi dello stesso colore, può servire per controllare che tutti i pacchi inseriti abbiano effettivamente lo stesso colore
             currentStockLevel: INT; //livello di stock attuale
             maxCapacity: INT; //capacità massima
             acceptedColor: USINT;
@@ -89,7 +89,7 @@ NAMESPACE Libreria
             ELSE // the mode is set to "empty"
                 IF recipe.RecipeSatisfiable()=TRUE THEN //AND currentStockLevel > 0 THEN
                     statomotore := Tipi.stato#backward;
-                    this.EmptyFIFO(); //potete commentare questa riga mentre trovo una soluzione all'errore
+                    THIS.EmptyFIFO();
                 END_IF;
             END_IF;            
         END_METHOD             
