@@ -90,22 +90,18 @@ NAMESPACE Libreria
             CntrlForward := FALSE;
             CntrlBackward := FALSE;
             actualState := stato#stop;
+            //Stop:=????
         END_METHOD
 
         
         
-        METHOD PUBLIC RunForward : BYTE //serve chiamare anche i motori?
-            VAR_INPUT
-                Mask: BYTE; 
-            END_VAR
-            
+        METHOD PUBLIC RunForward : BOOL //serve chiamare anche i motori?
             IF actualState <> stato#error THEN
-                /*//Motor.Start := TRUE;
+                //Motor.Start := TRUE;
                 CntrlForward := TRUE; //aggiungi sicura per eviatre che avanti e indietro possano essere attivati contemporaneamente
-                actualState := stato#forward;*/
-                RunForward := Mask;
+                actualState := stato#forward;
             END_IF;
-            //RunForward:=CntrlForward;
+            RunForward:=CntrlForward;
         END_METHOD
 
 

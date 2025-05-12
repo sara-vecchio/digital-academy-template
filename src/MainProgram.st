@@ -11,15 +11,13 @@ PROGRAM MainProgram
         //Qn : ARRAY[1..n_mag] of BOOL ;
         //Qd : ARRAY[1..n_mag] of BOOL ;
         //Qt : ARRAY[1..n_mag] of BOOL ;
-        //Id : ARRAY[1..n_mag] of USINT ;
+        Id : ARRAY[1..n_mag] of USINT ;
         //If_ : ARRAY[1..n_mag] of BOOL ;
         //Is : ARRAY[1..n_mag] of BOOL ;
         //Im : ARRAY[1..n_mag] of BOOL ;
         //ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT;
         //ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT;
-    END_VAR
-
-    VAR_external
+    
         Qn: BYTE;
         Qd: BYTE;
         Qt: BYTE;
@@ -28,47 +26,47 @@ PROGRAM MainProgram
         Is:BYTE;
         Im:BYTE;
         Mask: ARRAY[1..n_mag] of BYTE;
-        MaskOnes: BYTE;
 
         /*Qnf : BOOL;
         Qdf : BOOL;
-        Qtf : BOOL;
+        Qtf : BOOL;*/
         Idf : USINT;
-        Iff : BOOL;
+        /*Iff : BOOL;
         Isf : BOOL;
         Imf : BOOL;
         Qnc : BOOL;
         Qdc : BOOL;
-        Qtc : BOOL;
+        Qtc : BOOL;*/
         Idc : USINT;
-        Ifc : BOOL;
+        /*Ifc : BOOL;
         Isc : BOOL;
         Imc : BOOL; 
         Qn2 : BOOL;
         Qd2 : BOOL;
-        Qt2 : BOOL;
+        Qt2 : BOOL;*/
         Id2 : USINT;
-        If2 : BOOL;
+        /*If2 : BOOL;
         Is2 : BOOL;
         Im2 : BOOL;
         Qn3 : BOOL;
         Qd3 : BOOL;
-        Qt3 : BOOL;
+        Qt3 : BOOL;*/
         Id3 : USINT;
-        If3 : BOOL;
+        /*If3 : BOOL;
         Is3 : BOOL;
         Im3 : BOOL;
         Qn4 : BOOL;
         Qd4 : BOOL;
-        Qt4 : BOOL;
+        Qt4 : BOOL;*/
         Id4 : USINT;
-        If4 : BOOL;
+        /*If4 : BOOL;
         Is4 : BOOL;
         Im4 : BOOL;*/
         elapsedtimer : tempo.Timer;
         flag : BOOL;
         fineProcesso: BOOL;
         n_pacchi : INT;
+        color:colore;
     END_VAR
 
     VAR_external CONSTANT 
@@ -81,64 +79,67 @@ PROGRAM MainProgram
         i:INT;
     END_VAR
     
-    /*IF n_pacchi<0 THEN //se non ci sono pacchi fine smistamento
-        fineProcesso := TRUE;
-    END_IF;*/
 
     WHILE NOT(fineProcesso) DO //finche ci sono pacchi da smistare 
         i:=1;
         flag := FALSE;
 
-        IF n_pacchi = 0 THEN
+        IF n_pacchi <= 0 THEN
             fineProcesso := TRUE;
+            EXIT; //esce dal while
         END_IF;
 
         
         WHILE i<n_mag DO
 
-            Qn := nastri[i].RunForward(MaskOnes); //i nastri sono sempre in moto (forward)
-            nastri[i].isEmpty := nastri[i].CheckEmpty(If_ AND Mask[i]);// controlla se il nastro ha un pacco  
+            IF nastri[i].RunForward() THEN //i nastri sono sempre in moto (forward)
+                Qn := (Qn OR Mask[i]); //accendo il bit i e mantengo accesi quelli che eventualmente già lo sono in Qn
+            END_IF;
+
+            nastri[i].isEmpty := nastri[i].CheckEmpty((If_ AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco. TRUE SE IL BIT i è ACCESO, ALTRIMENTI FALSE
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             
-            WHILE NOT elapsedtimer.Check(Qn[i],tStopMotor) DO
+            WHILE NOT elapsedtimer.Check(((Qn AND Mask[i])<>BYTE#0),tStopMotor) DO
                 ;
             END_WHILE;
-            If_[i] := FALSE;// spegni fotocellula del nastro
-            Is[i] := TRUE;// accendi sensore (prima del deviatore)
+            If_ := (If_ AND NOT Mask[i]);// spegni fotocellula del nastro - SPENGO IL BIT i, diventa 0
+            Is := (Is OR Mask[i]);// accendi sensore (prima del deviatore) -ACCENDO IL BIT i, diventa 1
             
-            IF Is[i] THEN
+            IF ((Is AND Mask[i]) <>BYTE#0) THEN
             Qn[i] := nastri[i].Stop();
-            nastri[i].isEmpty := nastri[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
+            nastri[i].isEmpty := nastri[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
             //Id[1]:=ListaPacchi2[n_pacchi_max-n_pacchi+1];
-            Id[1]:=ListaPacchi[n_pacchi_max-n_pacchi+1];
+            //Id[1]:=ListaPacchi[n_pacchi_max-n_pacchi+1];
+            Id[i]:=SelectSensorInput(i,Id[1],Id[2],Id[3],Id[4], Id[5]);
             IF deviatori[i].IsMycolor(Id[i]) = TRUE THEN // controllato se il pacco è da smistare
-                //Id[i]
                 IF magazzini[i].StockisFull THEN
                     deviatori[i].Discard();
                 ELSE
                     deviatori[i].Accept();
-                    Qt[i]:=(magazzini[i].RunForward()*Mask[i] OR Qtall);//attiva motore tank 
+                    IF magazzini[i].RunForward() THEN //attiva motore tank 
+                        Qn := (Qn OR Mask[i]);
+                    END_IF;
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
+                    magazzini[i].isEmpty := magazzini[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro del magazzino ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
-                    Is[i] := FALSE;
-                    Im[i] := TRUE; 
-                    IF elapsedtimer.Check(Im[i],tStopMotor) THEN
-                        Im[i] := FALSE;
+                    Is := (Is AND NOT Mask[i]); //0
+                    Im := (Im OR Mask[i]); //1
+                    IF elapsedtimer.Check(((Im AND Mask[i])<>BYTE#0),tStopMotor) THEN
+                        Im := (Im AND NOT Mask[i]); //0
                     END_IF;
                     Qt[i] := magazzini[i].Stop();
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
+                    magazzini[i].isEmpty := magazzini[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
-                    Id[1]  := USINT#0;
-                    Id[2]  := USINT#0;
-                    Id[3]  := USINT#0;
-                    Id[4]  := USINT#0;
-                    Id[5]  := USINT#0;
+                    Id[1] := USINT#0; //resetto
+                    Id[2] := USINT#0;
+                    Id[3] := USINT#0;
+                    Id[4] := USINT#0;
+                    Id[5] := USINT#0;
                     magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel()+1; //lo spazio del magazzino cala
                     magazzini[i].isFull();
                     
