@@ -8,116 +8,80 @@ NAMESPACE Libreria
 
         VAR PUBLIC
             ID:INT;
-            actualState : stato;    // Comando avanti
-            CntrlBackward : BOOL;   // Comando indietro
-            isForward : BOOL;    // Uscita avanti //necessario?
-            isBackward : BOOL;   // Uscita indietro //necessario?
-            isEmpty:BOOL;
-            CntrlForward : BOOL;
-            colore: colore;
+            actualState : stato;
+            bMove : BOOL; //acceso o spento
+            bForward : BOOL; //avanti o indietro
         END_VAR
         
         
         
-        METHOD PUBLIC Init  // Initialization motor
+        METHOD PUBLIC Init  //Inizializzazione
             VAR_INPUT
                 IDinit : INT;
-                Color : colore;
             END_VAR
             ID:=IDinit;
-            colore := color;
             actualState := stato#stop;
-            CntrlForward := FALSE;
-            CntrlBackward := FALSE;
-            isForward := FALSE;
-            isBackward := FALSE;
-
+            bMove := FALSE;
+            bForward := FALSE;
         END_METHOD
         
-        
-        
-        METHOD PUBLIC Update : stato
-            
-            IF CntrlForward AND NOT CntrlBackward THEN
-                actualState := stato#forward;
-            ELSIF CntrlBackward AND NOT CntrlForward THEN
-                actualState := stato#backward;
-            ELSE
-                actualState := stato#stop;
-            END_IF;
-        
-            CASE actualState OF
-                stato#forward:
-                    isForward := TRUE;
-                    isBackward := FALSE;
-                stato#backward:
-                    isForward := FALSE;
-                    isBackward := TRUE;
-                stato#stop:
-                    isForward := FALSE;
-                    isBackward := FALSE;
-            END_CASE;
-
-        END_METHOD
 
         
         
-        METHOD PUBLIC CheckEmpty : BOOL  //check if is isEmpty from sensor
-           
+        METHOD PUBLIC isEmpty : BOOL  //check if is isEmpty from sensor    
             VAR_INPUT
-                bLightSensor: BOOL;
+                bLightSensor: BOOL; //Iff, If2, If3, If4, Ifc
             END_VAR
 
             IF bLightSensor THEN
-                CheckEmpty := FALSE;
+                isEmpty := FALSE;
             ELSIF NOT bLightSensor THEN
-                CheckEmpty := TRUE;
+                isEmpty := TRUE;
             ELSE
                 actualState := stato#error;
             END_IF;
-
         END_METHOD
 
         
         
         METHOD PUBLIC GetStatus : tipi.stato // get state of the conveyor
+            IF bMove AND bForward THEN
+                actualState := stato#forward;
+            ELSIF bMove AND NOT(bForward) THEN
+                actualState := stato#backward;
+            ELSIF NOT(bMove) THEN
+                actualState := stato#stop;
+            END_IF;
             GetStatus := actualState;
         END_METHOD
     
-        
-        
-        METHOD PUBLIC Stop : BOOL
-            CntrlForward := FALSE;
-            CntrlBackward := FALSE;
-            actualState := stato#stop;
-        END_METHOD
 
         
-        
-        METHOD PUBLIC RunForward : BYTE //serve chiamare anche i motori?
-            VAR_INPUT
-                Mask: BYTE; 
-            END_VAR
-            
+        METHOD PUBLIC RunForward
             IF actualState <> stato#error THEN
-                /*//Motor.Start := TRUE;
-                CntrlForward := TRUE; //aggiungi sicura per eviatre che avanti e indietro possano essere attivati contemporaneamente
-                actualState := stato#forward;*/
-                RunForward := Mask;
+                bMove := TRUE;
+                bForward := TRUE;
+                actualState := stato#forward;
             END_IF;
-            //RunForward:=CntrlForward;
         END_METHOD
 
 
 
         METHOD PUBLIC RunBackward 
             IF actualState <> stato#error THEN
-                //Motor.Start := TRUE;
-                CntrlBackward := TRUE; //aggiungi stessa sicura di sopra
+                bMove := TRUE;
+                bForward := FALSE;
                 actualState := stato#backward;
             END_IF;
         END_METHOD
-    
+
+
+        METHOD PUBLIC Stop
+            IF actualState <> stato#error THEN
+                bMove := FALSE;
+                actualState := stato#stop;
+            END_IF;
+        END_METHOD
     
     
     END_CLASS
