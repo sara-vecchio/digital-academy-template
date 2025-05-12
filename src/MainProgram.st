@@ -8,29 +8,11 @@ PROGRAM MainProgram
         nastri : ARRAY [1..n_mag] OF Libreria.nastro;
         deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
         magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
-        //Qn : ARRAY[1..n_mag] of BOOL ;
-        //Qd : ARRAY[1..n_mag] of BOOL ;
-        //Qt : ARRAY[1..n_mag] of BOOL ;
-        //Id : ARRAY[1..n_mag] of USINT ;
-        //If_ : ARRAY[1..n_mag] of BOOL ;
-        //Is : ARRAY[1..n_mag] of BOOL ;
-        //Im : ARRAY[1..n_mag] of BOOL ;
-        //ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT;
-        //ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT;
     END_VAR
 
     VAR_external
-        Qn: BYTE;
-        Qd: BYTE;
-        Qt: BYTE;
-        //Id: BYTE;
-        If_ :BYTE;
-        Is:BYTE;
-        Im:BYTE;
-        Mask: ARRAY[1..n_mag] of BYTE;
-        MaskOnes: BYTE;
 
-        /*Qnf : BOOL;
+        Qnf : BOOL;
         Qdf : BOOL;
         Qtf : BOOL;
         Idf : USINT;
@@ -64,7 +46,7 @@ PROGRAM MainProgram
         Id4 : USINT;
         If4 : BOOL;
         Is4 : BOOL;
-        Im4 : BOOL;*/
+        Im4 : BOOL;
         elapsedtimer : tempo.Timer;
         flag : BOOL;
         fineProcesso: BOOL;
@@ -74,104 +56,164 @@ PROGRAM MainProgram
     VAR_external CONSTANT 
         n_mag: int;
         tStopMotor : Time;
-        //n_pacchi_max : INT;
     END_VAR
 
     VAR_TEMP
         i:INT;
     END_VAR
     
-    /*IF n_pacchi<0 THEN //se non ci sono pacchi fine smistamento
-        fineProcesso := TRUE;
-    END_IF;*/
-
-    WHILE NOT(fineProcesso) DO //finche ci sono pacchi da smistare 
-        i:=1;
-        flag := FALSE;
-
-        IF n_pacchi = 0 THEN
-            fineProcesso := TRUE;
+ 
+    //BLOCCO FEED
+    IF NOT(nastri[1].isEmpty(Iff)) THEN //se pacco presente sul nastro principale
+        nastri[1].RunForward(); 
+        Qnf := nastri[1].bMove; //accendo il nastro principale
+    ELSE
+        nastri[1].Stop(); 
+        Qnf := nastri[1].bMove; //spengo il nastro principale
+    END_IF;
+    
+    magazzini[1].isFull(); //controllo se il magazzino è pieno
+    IF deviatori[1].IsMycolor(Idf, Isf) THEN // controllo se il pacco è da smistare
+        IF magazzini[1].StockisFull THEN
+            deviatori[1].Discard();
+            Qdf := deviatori[1].bCmd; //disattivo il deviatore
+        ELSE
+            deviatori[1].Accept();
+            Qdf := deviatori[1].bCmd; //attivo il deviatore
+            magazzini[1].Counter(); //dico che nel magazzino c'è un pacco in più
         END_IF;
+    END_IF;
 
-        
-        WHILE i<n_mag DO
-
-            Qn := nastri[i].RunForward(MaskOnes); //i nastri sono sempre in moto (forward)
-            nastri[i].isEmpty := nastri[i].CheckEmpty(If_ AND Mask[i]);// controlla se il nastro ha un pacco  
-            nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
-            
-            WHILE NOT elapsedtimer.Check(Qn[i],tStopMotor) DO
-                ;
-            END_WHILE;
-            If_[i] := FALSE;// spegni fotocellula del nastro
-            Is[i] := TRUE;// accendi sensore (prima del deviatore)
-            
-            IF Is[i] THEN
-            Qn[i] := nastri[i].Stop();
-            nastri[i].isEmpty := nastri[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
-            nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
-            END_IF;
-            
-            //Id[1]:=ListaPacchi2[n_pacchi_max-n_pacchi+1];
-            Id[1]:=ListaPacchi[n_pacchi_max-n_pacchi+1];
-            IF deviatori[i].IsMycolor(Id[i]) = TRUE THEN // controllato se il pacco è da smistare
-                //Id[i]
-                IF magazzini[i].StockisFull THEN
-                    deviatori[i].Discard();
-                ELSE
-                    deviatori[i].Accept();
-                    Qt[i]:=(magazzini[i].RunForward()*Mask[i] OR Qtall);//attiva motore tank 
-                    magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
-                    magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
-                    Is[i] := FALSE;
-                    Im[i] := TRUE; 
-                    IF elapsedtimer.Check(Im[i],tStopMotor) THEN
-                        Im[i] := FALSE;
-                    END_IF;
-                    Qt[i] := magazzini[i].Stop();
-                    magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
-                    magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
-                    n_pacchi := n_pacchi-1; //il numero di pacchi cala
-                    Id[1]  := USINT#0;
-                    Id[2]  := USINT#0;
-                    Id[3]  := USINT#0;
-                    Id[4]  := USINT#0;
-                    Id[5]  := USINT#0;
-                    magazzini[i].currentStockLevel := magazzini[i].GetCurrentStockLevel()+1; //lo spazio del magazzino cala
-                    magazzini[i].isFull();
-                    
-                    flag:=TRUE;// flag per segnare che i pacchi sono già stati ridotti
-                    i:=n_mag;
-
-                END_IF;
+    IF NOT(nastri[1].isEmpty(Imf)) THEN //se il pacco è sul nastro del magazzino
+        magazzini[1].nastroMagazzino.RunForward();
+        Qtf := magazzini[1].nastroMagazzino.bMove; //accendo il nastro del magazzino
+    ELSE
+        magazzini[1].nastroMagazzino.Stop(); 
+        Qtf := magazzini[1].nastroMagazzino.bMove; //spengo il nastro del magazzino
+    END_IF; 
 
 
-            ELSE
 
-            Id[i+1] := Id[i];
-
-            END_IF;
-
-            i:=i+1;
-
-            IF n_pacchi = 0 THEN
-                fineProcesso := TRUE;
-            END_IF;
-
-        END_WHILE;
-
-        IF i=n_mag AND NOT(Flag) THEN //se abbiamo passato tutti i magazzini e i pacchi non sono stati ridotti entra nel magazzino scarto finale
-            n_pacchi := n_pacchi-1; //il numero di pacchi cala
-            magazzini[n_mag].currentStockLevel := magazzini[n_mag].GetCurrentStockLevel()+1;
-            magazzini[n_mag].isFull();  
-            
-            IF magazzini[n_mag].StockisFull THEN 
-                fineProcesso := TRUE; //esci dal ciclo perche non posso più caricare
-            END_IF;
+    //BLOCCO 2
+    IF NOT(nastri[2].isEmpty(If2)) THEN //se pacco presente sul nastro principale
+        nastri[2].RunForward(); 
+        Qn2 := nastri[2].bMove; //accendo il nastro principale
+    ELSE
+        nastri[2].Stop(); 
+        Qn2 := nastri[2].bMove; //spengo il nastro principale
+    END_IF;
+    
+    magazzini[2].isFull(); //controllo se il magazzino è pieno
+    IF deviatori[2].IsMycolor(Id2, Is2) THEN // controllo se il pacco è da smistare
+        IF magazzini[2].StockisFull THEN
+            deviatori[2].Discard();
+            Qd2 := deviatori[2].bCmd; //disattivo il deviatore
+        ELSE
+            deviatori[2].Accept();
+            Qd2 := deviatori[2].bCmd; //attivo il deviatore
+            magazzini[2].Counter(); //dico che nel magazzino c'è un pacco in più
         END_IF;
-        
-        
-    END_WHILE;
+    END_IF;
+
+    IF NOT(nastri[2].isEmpty(Im2)) THEN //se il pacco è sul nastro del magazzino
+        magazzini[2].nastroMagazzino.RunForward();
+        Qt2 := magazzini[2].nastroMagazzino.bMove; //accendo il nastro del magazzino
+    ELSE
+        magazzini[2].nastroMagazzino.Stop(); 
+        Qt2 := magazzini[2].nastroMagazzino.bMove; //spengo il nastro del magazzino
+    END_IF; 
+
+
+
+    //BLOCCO 3
+    IF NOT(nastri[3].isEmpty(If3)) THEN //se pacco presente sul nastro principale
+        nastri[3].RunForward(); 
+        Qn3 := nastri[3].bMove; //accendo il nastro principale
+    ELSE
+        nastri[3].Stop(); 
+        Qn3 := nastri[3].bMove; //spengo il nastro principale
+    END_IF;
+    
+    magazzini[3].isFull(); //controllo se il magazzino è pieno
+    IF deviatori[3].IsMycolor(Id3, Is3) THEN // controllo se il pacco è da smistare
+        IF magazzini[3].StockisFull THEN
+            deviatori[3].Discard();
+            Qd3 := deviatori[3].bCmd; //disattivo il deviatore
+        ELSE
+            deviatori[3].Accept();
+            Qd3 := deviatori[3].bCmd; //attivo il deviatore
+            magazzini[3].Counter(); //dico che nel magazzino c'è un pacco in più
+        END_IF;
+    END_IF;
+
+    IF NOT(nastri[3].isEmpty(Im3)) THEN //se il pacco è sul nastro del magazzino
+        magazzini[3].nastroMagazzino.RunForward();
+        Qt3 := magazzini[3].nastroMagazzino.bMove; //accendo il nastro del magazzino
+    ELSE
+        magazzini[3].nastroMagazzino.Stop(); 
+        Qt3 := magazzini[3].nastroMagazzino.bMove; //spengo il nastro del magazzino
+    END_IF;
+
+
+
+    //BLOCCO 4
+    IF NOT(nastri[4].isEmpty(If4)) THEN //se pacco presente sul nastro principale
+        nastri[4].RunForward(); 
+        Qn4 := nastri[4].bMove; //accendo il nastro principale
+    ELSE
+        nastri[4].Stop(); 
+        Qn4:= nastri[4].bMove; //spengo il nastro principale
+    END_IF;
+    
+    magazzini[4].isFull(); //controllo se il magazzino è pieno
+    IF deviatori[4].IsMycolor(Id4, Is4) THEN // controllo se il pacco è da smistare
+        IF magazzini[4].StockisFull THEN
+            deviatori[4].Discard();
+            Qd4 := deviatori[4].bCmd; //disattivo il deviatore
+        ELSE
+            deviatori[4].Accept();
+            Qd4 := deviatori[4].bCmd; //attivo il deviatore
+            magazzini[4].Counter(); //dico che nel magazzino c'è un pacco in più
+        END_IF;
+    END_IF;
+
+    IF NOT(nastri[4].isEmpty(Im4)) THEN //se il pacco è sul nastro del magazzino
+        magazzini[4].nastroMagazzino.RunForward();
+        Qt4 := magazzini[4].nastroMagazzino.bMove; //accendo il nastro del magazzino
+    ELSE
+        magazzini[4].nastroMagazzino.Stop(); 
+        Qt4 := magazzini[4].nastroMagazzino.bMove; //spengo il nastro del magazzino
+    END_IF;
+    
+    
+
+    //BLOCCO CODA
+    IF NOT(nastri[5].isEmpty(Ifc)) THEN //se pacco presente sul nastro principale
+        nastri[5].RunForward(); 
+        Qnc := nastri[5].bMove; //accendo il nastro principale
+    ELSE
+        nastri[5].Stop(); 
+        Qnc := nastri[5].bMove; //spengo il nastro principale
+    END_IF;
+    
+    magazzini[5].isFull(); //controllo se il magazzino è pieno
+    IF deviatori[5].IsMyColor_coda(Idc, Isc) THEN // controllo se il pacco è da smistare
+        IF magazzini[5].StockisFull THEN
+            deviatori[5].Discard();
+            Qdc := deviatori[5].bCmd; //disattivo il deviatore
+        ELSE
+            deviatori[5].Accept();
+            Qdc := deviatori[5].bCmd; //attivo il deviatore
+            magazzini[5].Counter(); //dico che nel magazzino c'è un pacco in più
+        END_IF;
+    END_IF;
+
+    IF NOT(nastri[5].isEmpty(Imc)) THEN //se il pacco è sul nastro del magazzino
+        magazzini[5].nastroMagazzino.RunForward();
+        Qtc := magazzini[5].nastroMagazzino.bMove; //accendo il nastro del magazzino
+    ELSE
+        magazzini[5].nastroMagazzino.Stop(); 
+        Qtc := magazzini[5].nastroMagazzino.bMove; //spengo il nastro del magazzino
+    END_IF;
+
 END_PROGRAM
