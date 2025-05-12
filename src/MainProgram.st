@@ -8,19 +8,29 @@ PROGRAM MainProgram
         nastri : ARRAY [1..n_mag] OF Libreria.nastro;
         deviatori : ARRAY [1..n_mag] OF Libreria.deviatore;
         magazzini : ARRAY [1..n_mag] OF Libreria.inventory;
-        Qn : ARRAY[1..n_mag] of BOOL ;
-        Qd : ARRAY[1..n_mag] of BOOL ;
-        Qt : ARRAY[1..n_mag] of BOOL ;
-        Id : ARRAY[1..n_mag] of USINT ;
-        If_ : ARRAY[1..n_mag] of BOOL ;
-        Is : ARRAY[1..n_mag] of BOOL ;
-        Im : ARRAY[1..n_mag] of BOOL ;
-        ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT;
-        ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT;
+        //Qn : ARRAY[1..n_mag] of BOOL ;
+        //Qd : ARRAY[1..n_mag] of BOOL ;
+        //Qt : ARRAY[1..n_mag] of BOOL ;
+        //Id : ARRAY[1..n_mag] of USINT ;
+        //If_ : ARRAY[1..n_mag] of BOOL ;
+        //Is : ARRAY[1..n_mag] of BOOL ;
+        //Im : ARRAY[1..n_mag] of BOOL ;
+        //ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT;
+        //ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT;
     END_VAR
 
     VAR_external
-        Qnf : BOOL;
+        Qn: BYTE;
+        Qd: BYTE;
+        Qt: BYTE;
+        //Id: BYTE;
+        If_ :BYTE;
+        Is:BYTE;
+        Im:BYTE;
+        Mask: ARRAY[1..n_mag] of BYTE;
+        MaskOnes: BYTE;
+
+        /*Qnf : BOOL;
         Qdf : BOOL;
         Qtf : BOOL;
         Idf : USINT;
@@ -54,7 +64,7 @@ PROGRAM MainProgram
         Id4 : USINT;
         If4 : BOOL;
         Is4 : BOOL;
-        Im4 : BOOL;
+        Im4 : BOOL;*/
         elapsedtimer : tempo.Timer;
         flag : BOOL;
         fineProcesso: BOOL;
@@ -64,7 +74,7 @@ PROGRAM MainProgram
     VAR_external CONSTANT 
         n_mag: int;
         tStopMotor : Time;
-        n_pacchi_max : INT;
+        //n_pacchi_max : INT;
     END_VAR
 
     VAR_TEMP
@@ -86,9 +96,8 @@ PROGRAM MainProgram
         
         WHILE i<n_mag DO
 
-            //Simulazione();
-            Qn[i] := nastri[i].RunForward();
-            nastri[i].isEmpty := nastri[i].CheckEmpty(If_[i]);// controlla se il nastro ha un pacco
+            Qn := nastri[i].RunForward(MaskOnes); //i nastri sono sempre in moto (forward)
+            nastri[i].isEmpty := nastri[i].CheckEmpty(If_ AND Mask[i]);// controlla se il nastro ha un pacco  
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             
             WHILE NOT elapsedtimer.Check(Qn[i],tStopMotor) DO
@@ -111,7 +120,7 @@ PROGRAM MainProgram
                     deviatori[i].Discard();
                 ELSE
                     deviatori[i].Accept();
-                    Qt[i]:=magazzini[i].RunForward();//attiva motore tank 
+                    Qt[i]:=(magazzini[i].RunForward()*Mask[i] OR Qtall);//attiva motore tank 
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
                     magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
