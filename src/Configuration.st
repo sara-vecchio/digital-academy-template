@@ -40,6 +40,7 @@ CONFIGURATION MyConfig
         Idc AT %IB7 : USINT; //input colore pacco sul nastro principale coda (0=undefined, 1=red, 2=orange, 3=yellow, 4=green, 5=blue, 6=indigo, 7=violet)
         Id2 AT %IB8 : USINT; //input colore pacco sul nastro principale 2 (0=undefined, 1=red, 2=orange, 3=yellow, 4=green, 5=blue, 6=indigo, 7=violet)
         Id3 AT %IB9 : USINT;
+        Id4 AT %IB10 : USINT;
 
         Iff AT %I0.0 : BOOL; //input fotocellula feed
         Ifc AT %I0.1 : BOOL; //input presenza pacco sul nastro principale coda (false=assente, true=presente)
