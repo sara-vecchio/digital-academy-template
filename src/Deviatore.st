@@ -6,61 +6,63 @@ NAMESPACE Libreria
 
         VAR PUBLIC
             ID :INT;
-            color : colore;
-            sensore : BOOL; // il sensore del deviatore del magazzino rosso si attiva se vede un pacco rosso
-            cntrlApri : BOOL; // segnale per aprire il deviatore (se è aperto lascia passare i pacchi)   
-            cntrlChiudi : BOOL; // segnale per chiudere il deviatore (se è chiuso devia i pacchi)
-            chiuso : BOOL; 
-            accetta : BOOL;
+            acceptedColor : tipi.colore; //il colore da deviare (definito nell'inizializzazione)
+            bCmd : BOOL; //se vero il deviatore devia se falso il deviatore lascia passare
+            nCountAccepted : INT; //numero di pacchi deviati
         END_VAR
         
         METHOD PUBLIC Init // inizializzazione del deviatore
             VAR_INPUT
                 IDinit : INT;
+                color : tipi.colore;
             END_VAR
             ID:=IDinit;
-            sensore := FALSE; // all'inizio non vede il pacco
-            chiuso := FALSE; // all'inizio il deviatore è aperto
-            cntrlApri := FALSE; 
-            cntrlChiudi := FALSE; // all'inizio non ci sono comandi di apertura o chiusura
+            acceptedColor := color;
+            bCmd := FALSE; //il deviatore lascia passare
+            nCountAccepted := 0;
         END_METHOD
 
-        METHOD PUBLIC ChiudiDeviatore : BOOL // nel main se (sensore = TRUE) vogliamo chiudere il deviatore
-
-            cntrlChiudi := TRUE;
-
-        END_METHOD 
-
-        METHOD PUBLIC ApriDeviatore : BOOL // una volta deviato il pacco nel mai (sensore = FALSE) vogliamo aprire il deviatore
-            cntrlApri := TRUE;
-            cntrlChiudi := FALSE;
-            chiuso := FALSE;
-        END_METHOD // NB ci pensa test.st a definire (chiuso := FALSE)
 
         METHOD PUBLIC Accept 
-
-            cntrlChiudi := TRUE;
-
+            bCmd := TRUE;
+            nCountAccepted := nCountAccepted + 1;
         END_METHOD
+
 
         METHOD PUBLIC Discard : BOOL 
-
-            cntrlApri := TRUE;
-            
+            bCmd := FALSE;
         END_METHOD
         
+
         METHOD PUBLIC IsMyColor : BOOL  //controlla se accettare o meno il pacco
             VAR_INPUT
-                uSensor:colore;
+                uSensor : colore; //colore letto dal sensore
+                bSensor : BOOl; //sensore prima del deviatore
             END_VAR
             
-            IF uSensor = color THEN
+            IF uSensor = acceptedColor AND bSensor THEN //se è il colore giusto AND il pacco è visto dal sensore
                 IsMyColor := TRUE;
             ELSE
                 IsMyColor := FALSE;
             END_IF;
-            
         END_METHOD
+
+
+        METHOD PUBLIC IsMyColor_coda : BOOL  //controlla se accettare o meno il pacco il blocco coda
+            VAR_INPUT
+                uSensor : colore; //colore letto dal sensore
+                bSensor : BOOl; //sensore prima del deviatore
+            END_VAR
+            
+            IF bSensor THEN //se il pacco è visto dal sensore (non controllo il colore)
+                IsMyColor_coda := TRUE;
+            ELSE
+                IsMyColor_coda := FALSE;
+            END_IF;
+        END_METHOD
+
+
+
 
     END_CLASS
 
