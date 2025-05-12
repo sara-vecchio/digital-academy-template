@@ -3,51 +3,51 @@ USING Libreria;
 
 NAMESPACE Libreria
 
-    CLASS PUBLIC Inventory EXTENDS nastro 
+    CLASS PUBLIC Inventory 
         VAR PUBLIC
-            IDpackage: INT;
-            ListStoredPackages: ARRAY[1..3] OF USINT; //dato che un magazzino deve avere pacchi dello stesso colore, può servire per controllare che tutti i pacchi inseriti abbiano effettivamente lo stesso colore
+            ID_magazzino: INT;
             currentStockLevel: INT; //livello di stock attuale
             maxCapacity: INT; //capacità massima
-            acceptedColor: USINT;
             StockisFull: BOOL;
+            nastroMagazzino : nastro;
+
+            /*ListStoredPackages: ARRAY[1..3] OF USINT; //dato che un magazzino deve avere pacchi dello stesso colore, può servire per controllare che tutti i pacchi inseriti abbiano effettivamente lo stesso colore
             currentMode: Tipi.InventoryMode;
             statomotore: stato;
-            recipe: Ricetta;
+            recipe: Ricetta;*/
         END_VAR
         
 
-        METHOD PUBLIC Init //initialization of the inventory
+        METHOD PUBLIC Init_magazzino 
             VAR_INPUT
+                IDinit: INT;
                 Capacity : INT;
-                Color : USINT;
-                ID_i: INT;
             END_VAR
-            maxCapacity := Capacity;
-            acceptedColor := Color;
-            IDpackage:= ID_i;
+            ID_magazzino:= IDinit;
             currentStockLevel:=0; //ipotizzo che inizialmente i magazzini siano vuoti
+            maxCapacity := Capacity;
             StockisFull := FALSE;
-            currentMode := Tipi.InventoryMode#Fill; // di default vogliamo riempire i magazzini
+            nastroMagazzino.Init(IDinit); //ho aggiunto l'inizializzazione del nastro del magazzino
         END_METHOD
 
 
-        METHOD PUBLIC isFull  //controlla se il magazzino è pieno
-            VAR_OUTPUT
-                Load: BOOL; //TRUE:"ok puoi ancora riempire", FALSE:non puoi riempire
-            END_VAR
-            
+        METHOD PUBLIC isFull : BOOL //controlla se il magazzino è pieno
             IF currentStockLevel < maxCapacity THEN
-                StockisFull:= FALSE;
-                Load:=TRUE;
+                isFull:= FALSE;
+                StockisFull := FALSE;
             ELSE
-                StockisFull:=TRUE;
-                Load:=FALSE;
+                isFull:=TRUE;
+                StockisFull := TRUE;
             END_IF;
         END_METHOD
 
 
-        METHOD PUBLIC GetCurrentStockLevel : INT  //se chiamato, mostra il livello di riempimento attuale
+        METHOD PUBLIC Counter //aumento il numero di pacchi contati nel magazzino
+            currentStockLevel := currentStockLevel + 1;
+        END_METHOD
+
+
+        /*METHOD PUBLIC GetCurrentStockLevel : INT  //se chiamato, mostra il livello di riempimento attuale
             GetCurrentStockLevel:= currentStockLevel;
         END_METHOD
 
@@ -92,7 +92,7 @@ NAMESPACE Libreria
                     THIS.EmptyFIFO();
                 END_IF;
             END_IF;            
-        END_METHOD             
+        END_METHOD*/             
         
     END_CLASS
 
