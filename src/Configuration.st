@@ -15,48 +15,48 @@ CONFIGURATION MyConfig
     PROGRAM P2 WITH PackagesIn: RandPack;
 
     // Configuring IO tags    
-    VAR_GLOBAL  //DESCRIZIONI MESSE DA ALE CHE NON è SICURO <-------------
+    VAR_GLOBAL 
         
         //input output feed
         Qnf AT %Q0.0 : BOOL; //output nastro feed
-        Qnc AT %Q0.1 : BOOL; //output nastro principale coda (false -> fermo, true -> avanti)
-        Qn2 AT %Q0.2 : BOOL; //output nastro principale 2 (false -> fermo, true -> avanti)
+        Qnc AT %Q0.1 : BOOL;
+        Qn2 AT %Q0.2 : BOOL;
         Qn3 AT %Q0.3 : BOOL;
         Qn4 AT %Q0.4 : BOOL;
 
         Qdf AT %Q1.0 : BOOL; //output deviatore feed
-        Qdc AT %Q1.1 : BOOL; //output deviatore coda (false -> apri e lascia passare il pacco, true -> chiudi e devia il pacco verso il magazzino)
-        Qd2 AT %Q1.2 : BOOL; //output deviatore 2 (false -> apri e lascia passare il pacco, true -> chiudi e devia il pacco verso il magazzino)
+        Qdc AT %Q1.1 : BOOL; 
+        Qd2 AT %Q1.2 : BOOL;
         Qd3 AT %Q1.3 : BOOL;
         Qd4 AT %Q1.4 : BOOL;
         
         Qtf AT %Q2.0 : BOOL; //output tank feed
-        Qtc AT %Q2.1 : BOOL; //output nastro del magazzino scarto coda (false -> fermo, true -> avanti)     
-        Qt2 AT %Q2.2 : BOOL; //output nastro del magazzino 2 (come decido se va avanti, indietro o sta fermo se è BOOL???)    
-        Qt3 AT %Q2.3 : BOOL; // <-------------- stesso problema di qt2
-        Qt4 AT %Q2.4 : BOOL; // <-------------- stesso problema di qt2
+        Qtc AT %Q2.1 : BOOL;   
+        Qt2 AT %Q2.2 : BOOL;   
+        Qt3 AT %Q2.3 : BOOL; 
+        Qt4 AT %Q2.4 : BOOL; 
 
         Idf AT %IB6 : USINT; //input deviatore feed (colore)
-        Idc AT %IB7 : USINT; //input colore pacco sul nastro principale coda (0=undefined, 1=red, 2=orange, 3=yellow, 4=green, 5=blue, 6=indigo, 7=violet)
-        Id2 AT %IB8 : USINT; //input colore pacco sul nastro principale 2 (0=undefined, 1=red, 2=orange, 3=yellow, 4=green, 5=blue, 6=indigo, 7=violet)
+        Idc AT %IB7 : USINT;
+        Id2 AT %IB8 : USINT;
         Id3 AT %IB9 : USINT;
         Id4 AT %IB10 : USINT;
 
         Iff AT %I0.0 : BOOL; //input fotocellula feed
-        Ifc AT %I0.1 : BOOL; //input presenza pacco sul nastro principale coda (false=assente, true=presente)
-        If2 AT %I0.2 : BOOL; //input presenza pacco sul nastro principale 2 (false=assente, true=presente)
+        Ifc AT %I0.1 : BOOL;
+        If2 AT %I0.2 : BOOL; 
         If3 AT %I0.3 : BOOL;
         If4 AT %I0.4 : BOOL;
         
         Isf AT %I1.0 : BOOL; //input sensore feed (vedi slides)
-        Isc AT %I1.1 : BOOL; //input presenza pacco sul nastro del magazzino scarto coda (false=assente, true=presente)
-        Is2 AT %I1.2 : BOOL; //input presenza pacco sul nastro del magazzino 2 (false=assente, true=presente)
+        Isc AT %I1.1 : BOOL; 
+        Is2 AT %I1.2 : BOOL; 
         Is3 AT %I1.3 : BOOL;
         Is4 AT %I1.4 : BOOL;
 
         Imf AT %I2.0 : BOOL; //input magazzino feed
-        Imc AT %I2.1 : BOOL; //input pacco arrivato al magazzino scarto coda (false=non arrivato, true=arrivato)                                                 
-        Im2 AT %I2.2 : BOOL; //input pacco arrivato al magazzino 2 (false=non arrivato, true=arrivato)
+        Imc AT %I2.1 : BOOL;                                                
+        Im2 AT %I2.2 : BOOL;
         Im3 AT %I2.3 : BOOL;
         Im4 AT %I2.4 : BOOL;
  
