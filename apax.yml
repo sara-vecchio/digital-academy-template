@@ -37,7 +37,7 @@ variables:
 
   MASTER_PW: "Siemens$1"
   # The locations of the certificate files
-  TLS_CONNECT_CERTFILE: "certificate/reference_x509.crt"
+  TLS_CONNECT_CERTFILE: "PLC-1Communication-1.cer"
   TLS_IMPORT_CERTFILE: "certificate/containerWithPublicAndPrivateKeys_x509.p12"
   # The password for importing the certificate. 
   # Disclaimer: 

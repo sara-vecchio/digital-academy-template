@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${workspaceFolder}",
             "ip": "192.168.99.23",
-            "certificate": "${workspaceFolder}/certificate/reference_x509.crt"      
+            "certificate": "${workspaceFolder}/PLC-1Communication-1.cer"      
         }
     ]
 }

@@ -39,7 +39,7 @@ NAMESPACE Libreria
             ELSIF NOT (bLightSensor OR bSensor2) THEN
                 isEmpty := TRUE;
             ELSE
-                //actualState := stato#error;
+                ;//actualState := stato#error;
             END_IF;
         END_METHOD
 
