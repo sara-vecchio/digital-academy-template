@@ -82,6 +82,9 @@ PROGRAM MainProgram
             Qdf := deviatori[1].bCmd; //attivo il deviatore
             magazzini[1].Counter(); //dico che nel magazzino c'è un pacco in più
         END_IF;
+    ELSE
+        deviatori[1].Discard();
+        Qdf := deviatori[1].bCmd; //disattivo il deviatore
     END_IF;
 
     IF NOT(nastri[1].isEmpty(Imf)) THEN //se il pacco è sul nastro del magazzino
@@ -113,6 +116,9 @@ PROGRAM MainProgram
             Qd2 := deviatori[2].bCmd; //attivo il deviatore
             magazzini[2].Counter(); //dico che nel magazzino c'è un pacco in più
         END_IF;
+    ELSE
+        deviatori[2].Discard();
+        Qd2 := deviatori[2].bCmd; //disattivo il deviatore    
     END_IF;
 
     IF NOT(nastri[2].isEmpty(Im2)) THEN //se il pacco è sul nastro del magazzino
@@ -144,6 +150,9 @@ PROGRAM MainProgram
             Qd3 := deviatori[3].bCmd; //attivo il deviatore
             magazzini[3].Counter(); //dico che nel magazzino c'è un pacco in più
         END_IF;
+    ELSE
+        deviatori[3].Discard();
+        Qd3 := deviatori[3].bCmd; //disattivo il deviatore    
     END_IF;
 
     IF NOT(nastri[3].isEmpty(Im3)) THEN //se il pacco è sul nastro del magazzino
@@ -175,6 +184,9 @@ PROGRAM MainProgram
             Qd4 := deviatori[4].bCmd; //attivo il deviatore
             magazzini[4].Counter(); //dico che nel magazzino c'è un pacco in più
         END_IF;
+    ELSE
+        deviatori[4].Discard();
+        Qd4 := deviatori[4].bCmd; //disattivo il deviatore    
     END_IF;
 
     IF NOT(nastri[4].isEmpty(Im4)) THEN //se il pacco è sul nastro del magazzino
@@ -206,6 +218,9 @@ PROGRAM MainProgram
             Qdc := deviatori[5].bCmd; //attivo il deviatore
             magazzini[5].Counter(); //dico che nel magazzino c'è un pacco in più
         END_IF;
+    ELSE
+        deviatori[5].Discard();
+        Qdc := deviatori[5].bCmd; //disattivo il deviatore    
     END_IF;
 
     IF NOT(nastri[5].isEmpty(Imc)) THEN //se il pacco è sul nastro del magazzino
