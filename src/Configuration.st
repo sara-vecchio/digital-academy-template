@@ -47,21 +47,21 @@ CONFIGURATION MyConfig
         Id3 AT %IB9 : USINT;
         Id4 AT %IB10 : USINT;
 
-        If_ AT %IB0 : BYTE;
+    //    If_ AT %IB0 : BYTE;
         Iff AT %I0.0 : BOOL; //input fotocellula feed
         Ifc AT %I0.1 : BOOL;
         If2 AT %I0.2 : BOOL; 
         If3 AT %I0.3 : BOOL;
         If4 AT %I0.4 : BOOL;
         
-        Is AT %IB1 : BYTE;
+    //    Is AT %IB1 : BYTE;
         Isf AT %I1.0 : BOOL; //input sensore feed (vedi slides - sensore di presenza)
         Isc AT %I1.1 : BOOL; 
         Is2 AT %I1.2 : BOOL; 
         Is3 AT %I1.3 : BOOL;
         Is4 AT %I1.4 : BOOL;
 
-        Im AT %IB2 : BYTE;
+    //    Im AT %IB2 : BYTE;
         Imf AT %I2.0 : BOOL; //input magazzino feed
         Imc AT %I2.1 : BOOL;
         Im2 AT %I2.2 : BOOL;
@@ -76,9 +76,9 @@ CONFIGURATION MyConfig
         //Qt : ARRAY[1..n_mag] of BOOL ;
 
         Id : ARRAY[1..n_mag] of USINT ;
-        //If_ : ARRAY[1..n_mag] of BOOL ;
-        //Is : ARRAY[1..n_mag] of BOOL ;
-        //Im : ARRAY[1..n_mag] of BOOL ;
+        If_ : ARRAY[1..n_mag] of BOOL ;
+        Is : ARRAY[1..n_mag] of BOOL ;
+        Im : ARRAY[1..n_mag] of BOOL ;
 
         deviatori : ARRAY[1..n_mag] OF deviatore;
         magazzini : ARRAY[1..n_mag] OF inventory;

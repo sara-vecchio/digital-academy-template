@@ -16,6 +16,9 @@ signals:
  - magazzini[3].currentStockLevel
  - magazzini[4].currentStockLevel
  - magazzini[5].currentStockLevel
+ - Is[2] 
+ - Id[2]
+ - Qd2
  
  
 
@@ -34,7 +37,7 @@ signals:
 ## PERPETUAL JOB ADDITIONAL ELEMENTS
 
 ## The number of samples that can be kept in the job's internal storage
-bufferCount: 100000
+bufferCount: 10000
 
 ## FINITE JOB ADDITIONAL ELEMENTS
 

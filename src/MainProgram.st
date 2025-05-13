@@ -12,9 +12,9 @@ PROGRAM MainProgram
         //Qd : ARRAY[1..n_mag] of BOOL ;
         //Qt : ARRAY[1..n_mag] of BOOL ;
         Id : ARRAY[1..n_mag] of USINT ;
-        //If_ : ARRAY[1..n_mag] of BOOL ;
-        //Is : ARRAY[1..n_mag] of BOOL ;
-        //Im : ARRAY[1..n_mag] of BOOL ;
+        If_ : ARRAY[1..n_mag] of BOOL ;
+        Is : ARRAY[1..n_mag] of BOOL ;
+        Im : ARRAY[1..n_mag] of BOOL ;
         //ListaPacchi2: ARRAY [1..n_pacchi_max] OF USINT;
         //ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT;
     
@@ -22,46 +22,46 @@ PROGRAM MainProgram
         Qd: BYTE;
         Qt: BYTE;
         //Id: BYTE;
-        If_ :BYTE;
-        Is:BYTE;
-        Im:BYTE;
+    //    If_ :BYTE;
+    //    Is:BYTE;
+    //    Im:BYTE;
         Mask: ARRAY[1..n_mag] of BYTE;
 
         /*Qnf : BOOL;
         Qdf : BOOL;
         Qtf : BOOL;*/
         Idf : USINT;
-        /*Iff : BOOL;
+        Iff : BOOL;
         Isf : BOOL;
         Imf : BOOL;
-        Qnc : BOOL;
+        /*Qnc : BOOL;
         Qdc : BOOL;
         Qtc : BOOL;*/
         Idc : USINT;
-        /*Ifc : BOOL;
+        Ifc : BOOL;
         Isc : BOOL;
         Imc : BOOL; 
-        Qn2 : BOOL;
+        /*Qn2 : BOOL;
         Qd2 : BOOL;
         Qt2 : BOOL;*/
         Id2 : USINT;
-        /*If2 : BOOL;
+        If2 : BOOL;
         Is2 : BOOL;
         Im2 : BOOL;
-        Qn3 : BOOL;
+        /*Qn3 : BOOL;
         Qd3 : BOOL;
         Qt3 : BOOL;*/
         Id3 : USINT;
-        /*If3 : BOOL;
+        If3 : BOOL;
         Is3 : BOOL;
         Im3 : BOOL;
-        Qn4 : BOOL;
+        /*Qn4 : BOOL;
         Qd4 : BOOL;
         Qt4 : BOOL;*/
         Id4 : USINT;
-        /*If4 : BOOL;
+        If4 : BOOL;
         Is4 : BOOL;
-        Im4 : BOOL;*/
+        Im4 : BOOL;
         elapsedtimer : tempo.Timer;
         flag : BOOL;
         fineProcesso: BOOL;
@@ -96,18 +96,25 @@ PROGRAM MainProgram
                 Qn := (Qn OR Mask[i]); //accendo il bit i e mantengo accesi quelli che eventualmente già lo sono in Qn
             END_IF;
 
-            nastri[i].isEmpty := nastri[i].CheckEmpty((If_ AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco. TRUE SE IL BIT i è ACCESO, ALTRIMENTI FALSE
+            nastri[i].isEmpty := nastri[i].CheckEmpty(If_[i]);
+        //    nastri[i].isEmpty := nastri[i].CheckEmpty((If_ AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco. TRUE SE IL BIT i è ACCESO, ALTRIMENTI FALSE
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             
             WHILE NOT elapsedtimer.Check(((Qn AND Mask[i])<>BYTE#0),tStopMotor) DO
                 ;
             END_WHILE;
-            If_ := (If_ AND NOT Mask[i]);// spegni fotocellula del nastro - SPENGO IL BIT i, diventa 0
-            Is := (Is OR Mask[i]);// accendi sensore (prima del deviatore) -ACCENDO IL BIT i, diventa 1
+
+            If_[i] := FALSE;// spegni fotocellula del nastro
+            Is[i] := TRUE;// accendi sensore (prima del deviatore)
+        //    If_ := (If_ AND NOT Mask[i]);// spegni fotocellula del nastro - SPENGO IL BIT i, diventa 0
+        //    Is := (Is OR Mask[i]);// accendi sensore (prima del deviatore) -ACCENDO IL BIT i, diventa 1
             
-            IF ((Is AND Mask[i]) <>BYTE#0) THEN
-            Qn[i] := nastri[i].Stop();
-            nastri[i].isEmpty := nastri[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco
+            IF Is[i] THEN
+        //    IF ((Is AND Mask[i]) <>BYTE#0) THEN
+            Qn:= Qn AND NOT Mask[i];//setto il bit i a 0 e gli altri timangono uguali
+        //    Qn[i] := nastri[i].Stop();
+            nastri[i].isEmpty := nastri[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
+        //    nastri[i].isEmpty := nastri[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco
             nastri[i].actualState := nastri[i].Update();//aggiorna stato nastro
             END_IF;
             
@@ -123,16 +130,27 @@ PROGRAM MainProgram
                         Qn := (Qn OR Mask[i]);
                     END_IF;
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    magazzini[i].isEmpty := magazzini[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro del magazzino ha un pacco
+                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
+        //            magazzini[i].isEmpty := magazzini[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro del magazzino ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
-                    Is := (Is AND NOT Mask[i]); //0
+
+                    Is[i] := FALSE;
+                    Im[i] := TRUE; 
+                    IF elapsedtimer.Check(Im[i],tStopMotor) THEN
+                        Im[i] := FALSE;
+                    END_IF;
+        
+        /*            Is := (Is AND NOT Mask[i]); //0
                     Im := (Im OR Mask[i]); //1
                     IF elapsedtimer.Check(((Im AND Mask[i])<>BYTE#0),tStopMotor) THEN
                         Im := (Im AND NOT Mask[i]); //0
                     END_IF;
-                    Qt[i] := magazzini[i].Stop();
+        */  
+                    Qt:= Qt AND NOT Mask[i];//setto il bit i a 0 e gli altri timangono uguali
+        //            Qt[i] := magazzini[i].Stop();
                     magazzini[i].update();//aggiorna lo stato del nastro magazzino
-                    magazzini[i].isEmpty := magazzini[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco
+                    magazzini[i].isEmpty := magazzini[i].CheckEmpty(Im[i]);// controlla se il nastro ha un pacco
+        //            magazzini[i].isEmpty := magazzini[i].CheckEmpty((Im AND Mask[i])<>BYTE#0);// controlla se il nastro ha un pacco
                     magazzini[i].actualState := magazzini[i].Update();//aggiorna stato nastro
                     n_pacchi := n_pacchi-1; //il numero di pacchi cala
                     Id[1] := USINT#0; //resetto

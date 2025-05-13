@@ -19,17 +19,17 @@ PROGRAM LoadPlantConfiguration
         //Qd : ARRAY[1..n_mag] of BOOL ;
         //Qt : ARRAY[1..n_mag] of BOOL ;
         Id : ARRAY[1..n_mag] of USINT ;
-        //If_ : ARRAY[1..n_mag] of BOOL ;
-        //Is : ARRAY[1..n_mag] of BOOL ;
-        //Im : ARRAY[1..n_mag] of BOOL ;
+        If_ : ARRAY[1..n_mag] of BOOL ;
+        Is : ARRAY[1..n_mag] of BOOL ;
+        Im : ARRAY[1..n_mag] of BOOL ;
 
         Qn: BYTE;
         Qd: BYTE;
         Qt: BYTE;
         //Id: BYTE;
-        If_ :BYTE;
-        Is:BYTE;
-        Im:BYTE;
+    //    If_ :BYTE;
+    //    Is:BYTE;
+    //    Im:BYTE;
 
         Qnf : BOOL;
         Qdf : BOOL;
@@ -101,7 +101,7 @@ PROGRAM LoadPlantConfiguration
         Id[4]  := Id4;
         Id[5]  := Idc;
 
-        /*If_[1] := Iff;
+        If_[1] := Iff;
         If_[2] := If2;
         If_[3] := If3;
         If_[4] := If4;
@@ -117,7 +117,7 @@ PROGRAM LoadPlantConfiguration
         Im[2] := Im2;
         Im[3] := Im3;
         Im[4] := Im4;
-        Im[5] := Imc;*/
+        Im[5] := Imc;
 
         //feed
         nastri[1].ID := 1;

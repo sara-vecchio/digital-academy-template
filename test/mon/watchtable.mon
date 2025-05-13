@@ -8,5 +8,15 @@ magazzini[3].currentStockLevel
 magazzini[4].currentStockLevel
 magazzini[5].currentStockLevel
 
-ListaPacchi
-Id
+#ListaPacchi
+#Id
+
+If_ #input fotocellula
+Qn #output nastri
+
+Is #input sensore (presenza pacco)
+Id #input deviatore (colore): fotocellula legge il colore
+Qd #output deviatori: apri/chiudi deviatore
+
+Im #input magazzino
+Qt #output magazzini
