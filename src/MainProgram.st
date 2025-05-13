@@ -64,7 +64,7 @@ PROGRAM MainProgram
     
  
     //BLOCCO FEED
-    IF NOT(nastri[1].isEmpty(Iff)) THEN //se pacco presente sul nastro principale
+    IF NOT(nastri[1].isEmpty(Iff, Isf)) THEN //se pacco presente sul nastro principale
         nastri[1].RunForward(); 
         Qnf := nastri[1].bMove; //accendo il nastro principale
     ELSE
@@ -95,7 +95,7 @@ PROGRAM MainProgram
 
 
     //BLOCCO 2
-    IF NOT(nastri[2].isEmpty(If2)) THEN //se pacco presente sul nastro principale
+    IF NOT(nastri[2].isEmpty(If2, Is2)) THEN //se pacco presente sul nastro principale
         nastri[2].RunForward(); 
         Qn2 := nastri[2].bMove; //accendo il nastro principale
     ELSE
@@ -126,7 +126,7 @@ PROGRAM MainProgram
 
 
     //BLOCCO 3
-    IF NOT(nastri[3].isEmpty(If3)) THEN //se pacco presente sul nastro principale
+    IF NOT(nastri[3].isEmpty(If3, Is3)) THEN //se pacco presente sul nastro principale
         nastri[3].RunForward(); 
         Qn3 := nastri[3].bMove; //accendo il nastro principale
     ELSE
@@ -157,7 +157,7 @@ PROGRAM MainProgram
 
 
     //BLOCCO 4
-    IF NOT(nastri[4].isEmpty(If4)) THEN //se pacco presente sul nastro principale
+    IF NOT(nastri[4].isEmpty(If4, Is4)) THEN //se pacco presente sul nastro principale
         nastri[4].RunForward(); 
         Qn4 := nastri[4].bMove; //accendo il nastro principale
     ELSE
@@ -188,7 +188,7 @@ PROGRAM MainProgram
     
 
     //BLOCCO CODA
-    IF NOT(nastri[5].isEmpty(Ifc)) THEN //se pacco presente sul nastro principale
+    IF NOT(nastri[5].isEmpty(Ifc, Isc)) THEN //se pacco presente sul nastro principale
         nastri[5].RunForward(); 
         Qnc := nastri[5].bMove; //accendo il nastro principale
     ELSE
