@@ -1,5 +1,5 @@
 USING tipi;
-//USING MotorClass; //preso da libreria di @sara_vecchio
+
 
 NAMESPACE Libreria
     
@@ -14,7 +14,7 @@ NAMESPACE Libreria
         END_VAR
         
         
-        
+
         METHOD PUBLIC Init  //Inizializzazione
             VAR_INPUT
                 IDinit : INT;
@@ -25,47 +25,30 @@ NAMESPACE Libreria
             bForward := FALSE;
         END_METHOD
         
+        
 
-        
-        
         METHOD PUBLIC isEmpty : BOOL  //check if is isEmpty from sensor    
             VAR_INPUT
                 bLightSensor: BOOL; //Iff, If2, If3, If4, Ifc
                 bSensor2 : BOOL; //Isf, Is2...
             END_VAR
 
-            IF bLightSensor OR bSensor2 THEN
+            IF bLightSensor OR bSensor2 THEN //NB: c'è un punto in cui solo il sensore vede il pacco mentre la fotocellula non lo vede
                 isEmpty := FALSE;
             ELSIF NOT (bLightSensor OR bSensor2) THEN
                 isEmpty := TRUE;
-            ELSE
-                ;//actualState := stato#error;
             END_IF;
         END_METHOD
 
-        
-        
-        METHOD PUBLIC GetStatus : tipi.stato // get state of the conveyor
-            IF bMove AND bForward THEN
-                actualState := stato#forward;
-            ELSIF bMove AND NOT(bForward) THEN
-                actualState := stato#backward;
-            ELSIF NOT(bMove) THEN
-                actualState := stato#stop;
-            END_IF;
-            GetStatus := actualState;
-        END_METHOD
-    
 
         
-        METHOD PUBLIC RunForward
+        METHOD PUBLIC RunForward 
             IF actualState <> stato#error THEN
                 bMove := TRUE;
                 bForward := TRUE;
                 actualState := stato#forward;
             END_IF;
         END_METHOD
-
 
 
         METHOD PUBLIC RunBackward 
