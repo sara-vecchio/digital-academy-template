@@ -1,18 +1,18 @@
 USING Siemens.Simatic.S71500.Tasks;
 USING tipi;
 USING Libreria;
-USING tempo;
-USING System.Timer;
+
 
 CONFIGURATION MyConfig
 
     TASK Load: Startup;
-    TASK Main(Interval := T#1000ms,PRIORITY:=1); //di default è 50ms (minimo)
-    //TASK PackagesIn(Interval:= T#1s, PRIORITY:=1);//ogni 1s genera un pacco
+    TASK Main(Interval := T#100ms,PRIORITY:=1); //di default è 50ms (minimo)
     
     PROGRAM P0 WITH Load: LoadConfiguration; 
     PROGRAM P1 WITH Main: MainProgram;
-    //PROGRAM P2 WITH PackagesIn: RandPack;
+
+
+
 
     // Configuring IO tags    
     VAR_GLOBAL 
@@ -65,21 +65,15 @@ CONFIGURATION MyConfig
     VAR_GLOBAL
 
         nastri : ARRAY[1..n_mag] OF nastro;        
-        Id : ARRAY[1..n_mag] of USINT ;
         deviatori : ARRAY[1..n_mag] OF deviatore;
         magazzini : ARRAY[1..n_mag] OF inventory;
-        n_pacchi : INT:=20; 
-        elapsedtimer : tempo.Timer;
-        flag : BOOL := FALSE;
-        fineProcesso: BOOL := FALSE;
         
     END_VAR
 
     VAR_GLOBAL CONSTANT
 
         n_mag : INT := 5; // numero magazzini considerando uno feed e uno scarto e il penultimo ricetta o semplice
-        capacity : INT := 5;
-        tStopMotor : Time := T#5s;//tempo movimento motori
+        capacity : INT := 20; //numero pacchi che ogni magazzino può contenere
          
     END_VAR
     
@@ -88,10 +82,6 @@ END_CONFIGURATION
 
 
 PROGRAM LoadConfiguration
-    
-    VAR_TEMP
-        i:INT :=0;
-    END_VAR
 
     VAR_EXTERNAL
 
@@ -134,79 +124,44 @@ PROGRAM LoadConfiguration
         If4 : BOOL;
         Is4 : BOOL;
         Im4 : BOOL;
-        //elapsedtimer : tempo.Timer;
+    
         
     END_VAR
 
     VAR_EXTERNAL CONSTANT
         n_mag : INT;
         capacity : INT;
-        n_pacchi : INT;
     END_VAR
+
 
     //inizializzo il blocco feed
     nastri[1].Init(1);
-    deviatori[1].Init(1, USINT#0); //qua dico anche che colore il deviatore deve accettare
+    deviatori[1].Init(1, colore#Undefined); //qua dico anche che colore il deviatore deve accettare
     magazzini[1].Init_magazzino(1, capacity);
 
 
     //inizializzo il blocco 2
     nastri[2].Init(2);
-    deviatori[2].Init(2, USINT#1); //qua dico anche che colore il deviatore deve accettare
+    deviatori[2].Init(2, colore#Red); //qua dico anche che colore il deviatore deve accettare
     magazzini[2].Init_magazzino(2, capacity);
 
 
     //inizializzo il blocco 3
     nastri[3].Init(3);
-    deviatori[3].Init(3, USINT#2); //qua dico anche che colore il deviatore deve accettare
+    deviatori[3].Init(3, colore#White); //qua dico anche che colore il deviatore deve accettare
     magazzini[3].Init_magazzino(3, capacity);
 
 
     //inizializzo il blocco 4
     nastri[4].Init(4);
-    deviatori[4].Init(4, USINT#3); //qua dico anche che colore il deviatore deve accettare
+    deviatori[4].Init(4, colore#Yellow); //qua dico anche che colore il deviatore deve accettare
     magazzini[4].Init_magazzino(4, capacity);
 
 
     //inizializzo il blocco coda
     nastri[n_mag].Init(n_mag);
-    deviatori[n_mag].Init(n_mag, USINT#0); //qua dico anche che colore il deviatore deve accettare
+    deviatori[n_mag].Init(n_mag, colore#Undefined); //qua dico un colore a caso ma in realtà accetta tutto (vedi method deviatore.IsMyColor_coda)
     magazzini[n_mag].Init_magazzino(n_mag, capacity);
 
 
 END_PROGRAM
-
-
-/*PROGRAM RandPack
-    VAR
-        PackOnDelay : OnDelay;
-        triggerSuccess : BOOL;
-        RandomSeed : INT:=1;
-        coloreIngresso: USINT;
-        pacchi_creati: INT:=0;
-    END_VAR
-    
-    VAR_EXTERNAL CONSTANT
-        n_pacchi_max : INT;
-        ListaPacchi: ARRAY [1..n_pacchi_max] OF USINT; 
-    END_VAR
-
-WHILE  pacchi_creati<n_pacchi_max DO //serve effettivamente questo while?
-    PackOnDelay(signal := pacchi_creati<n_pacchi_max, duration := T#50ms); // se dopo 50ms signal è ancora TRUE, l'output diventa TRUE
-    triggerSuccess := PackOnDelay.output;
-    
-    IF triggerSuccess AND pacchi_creati<n_pacchi_max THEN
-        // Simula colore random tra 0 e 7
-        RandomSeed := (RandomSeed * 37 + 91) MOD 1000;
-        coloreIngresso := TO_USINT(RandomSeed MOD 8); //MOD 8 limita il numero tra 0 e 7
-
-        IF coloreIngresso>USINT#7 THEN
-            coloreIngresso:=USINT#0;
-        END_IF;
-
-        ListaPacchi[pacchi_creati + 1] := coloreIngresso;
-        pacchi_creati := pacchi_creati + 1;
-    END_IF; 
-END_WHILE;
-
-END_PROGRAM*/
