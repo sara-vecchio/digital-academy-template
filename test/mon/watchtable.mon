@@ -1,8 +1,39 @@
+#BLOCCO FEED:
+nastri[1].bMove #nastro acceso o spento
+deviatori[1].acceptedColor #colore da deviare
+deviatori[1].nCountAccepted #numero di pacchi deviati
+deviatori[1].bCmd #deviatore attivato o disattivato
+magazzini[1].currentStockLevel #pacchi nel magazzino
+magazzini[1].nastroMagazzino.bMove #nastro magazzino acceso o spento
 
-Id2
-If2
-Im2
-Is2
-Qn2
-Qd2
-Qt2
+#BLOCCO 2:
+nastri[2].bMove #nastro acceso o spento
+deviatori[2].acceptedColor #colore da deviare
+deviatori[2].nCountAccepted #numero di pacchi deviati
+deviatori[2].bCmd #deviatore attivato o disattivato
+magazzini[2].currentStockLevel #pacchi nel magazzino
+magazzini[2].nastroMagazzino.bMove #nastro magazzino acceso o spento
+
+#BLOCCO 3:
+nastri[3].bMove #nastro acceso o spento
+deviatori[3].acceptedColor #colore da deviare
+deviatori[3].nCountAccepted #numero di pacchi deviati
+deviatori[3].bCmd #deviatore attivato o disattivato
+magazzini[3].currentStockLevel #pacchi nel magazzino
+magazzini[3].nastroMagazzino.bMove #nastro magazzino acceso o spento
+
+#BLOCCO 4:
+nastri[4].bMove #nastro acceso o spento
+deviatori[4].acceptedColor #colore da deviare
+deviatori[4].nCountAccepted #numero di pacchi deviati
+deviatori[4].bCmd #deviatore attivato o disattivato
+magazzini[4].currentStockLevel #pacchi nel magazzino
+magazzini[4].nastroMagazzino.bMove #nastro magazzino acceso o spento
+
+#BLOCCO CODA:
+nastri[5].bMove #nastro acceso o spento
+deviatori[5].acceptedColor #colore da deviare
+deviatori[5].nCountAccepted #numero di pacchi deviati
+deviatori[5].bCmd #deviatore attivato o disattivato
+magazzini[5].currentStockLevel #pacchi nel magazzino
+magazzini[5].nastroMagazzino.bMove #nastro magazzino acceso o spento
