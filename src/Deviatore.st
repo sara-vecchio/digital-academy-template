@@ -6,7 +6,7 @@ NAMESPACE Libreria
 
         VAR PUBLIC
             ID :INT;
-            acceptedColor : tipi.colore; //il colore da deviare (definito nell'inizializzazione)
+            acceptedColor : colore; //il colore da deviare (definito nell'inizializzazione)
             bCmd : BOOL; //se vero il deviatore devia se falso il deviatore lascia passare
             nCountAccepted : INT; //numero di pacchi deviati
         END_VAR
@@ -14,7 +14,7 @@ NAMESPACE Libreria
         METHOD PUBLIC Init // inizializzazione del deviatore
             VAR_INPUT
                 IDinit : INT;
-                color : tipi.colore;
+                color : colore;
             END_VAR
             ID:=IDinit;
             acceptedColor := color;
@@ -37,10 +37,9 @@ NAMESPACE Libreria
         METHOD PUBLIC IsMyColor : BOOL  //controlla se accettare o meno il pacco
             VAR_INPUT
                 uSensor : colore; //colore letto dal sensore
-                bSensor : BOOl; //sensore prima del deviatore
             END_VAR
             
-            IF uSensor = acceptedColor AND bSensor THEN //se è il colore giusto AND il pacco è visto dal sensore
+            IF (uSensor = acceptedColor) THEN //se è il colore giusto 
                 IsMyColor := TRUE;
             ELSE
                 IsMyColor := FALSE;
