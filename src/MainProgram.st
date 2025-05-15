@@ -73,7 +73,7 @@ PROGRAM MainProgram
     
 
     IF Isf THEN //se il sensore prima del deviatore vede un pacco
-        IF deviatori[1].IsMycolor(Idf) THEN // controllo se il pacco è da smistare
+        IF deviatori[1].IsMyColor(Idf) THEN // controllo se il pacco è da smistare
             IF magazzini[1].isFull() THEN //se il magazzino è pieno
                 deviatori[1].Discard();
                 Qdf := deviatori[1].bCmd; //disattivo il deviatore
@@ -112,7 +112,7 @@ PROGRAM MainProgram
     
 
     IF Is2 THEN //se il sensore prima del deviatore vede un pacco
-        IF deviatori[2].IsMycolor(Id2) THEN // controllo se il pacco è da smistare
+        IF deviatori[2].IsMyColor(Id2) THEN // controllo se il pacco è da smistare
             IF magazzini[2].isFull() THEN //se il magazzino è pieno
                 deviatori[2].Discard();
                 Qd2 := deviatori[2].bCmd; //disattivo il deviatore
@@ -151,7 +151,7 @@ PROGRAM MainProgram
     
 
     IF Is3 THEN //se il sensore prima del deviatore vede un pacco
-        IF deviatori[3].IsMycolor(Id3) THEN // controllo se il pacco è da smistare
+        IF deviatori[3].IsMyColor(Id3) THEN // controllo se il pacco è da smistare
             IF magazzini[3].isFull() THEN //se il magazzino è pieno
                 deviatori[3].Discard();
                 Qd3 := deviatori[3].bCmd; //disattivo il deviatore
@@ -189,7 +189,7 @@ PROGRAM MainProgram
     
 
     IF Is4 THEN //se il sensore prima del deviatore vede un pacco
-        IF deviatori[4].IsMycolor(Id4) THEN // controllo se il pacco è da smistare
+        IF deviatori[4].IsMyColor(Id4) THEN // controllo se il pacco è da smistare
             IF magazzini[4].isFull() THEN //se il magazzino è pieno
                 deviatori[4].Discard();
                 Qd4 := deviatori[4].bCmd; //disattivo il deviatore
@@ -227,7 +227,7 @@ PROGRAM MainProgram
     
 
     IF Isc THEN //se il sensore prima del deviatore vede un pacco
-        IF deviatori[5].IsMycolor(Idc) THEN // controllo se il pacco è da smistare
+        IF deviatori[5].IsMyColor_coda(Idc) THEN // controllo se il pacco è da smistare
             IF magazzini[5].isFull() THEN //se il magazzino è pieno
                 deviatori[5].Discard();
                 Qdc := deviatori[5].bCmd; //disattivo il deviatore
