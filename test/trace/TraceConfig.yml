@@ -10,44 +10,14 @@ name: inventory_stocklevel
 jobType: perpetual #finite
 
 ## An array of signals to be traced.
-signals:
- - Idf
- - Idc
+signals: 
  - Id2
- - Id3
- - Id4
- - Iff
- - Ifc
  - If2
- - If3
- - If4
- - Isf
- - Isc
  - Is2
- - Is3
- - Is4
- - Imf
- - Imc
  - Im2
- - Im3
- - Im4
- - Qnf
- - Qnc
  - Qn2
- - Qn3
- - Qn4
- - Qdf
- - Qdc
  - Qd2
- - Qd3
- - Qd4
- - Qtf
- - Qtc
  - Qt2
- - Qt3
- - Qt4
-
- 
  
 
 ## The checkPoint group contains settings to configure capture of a sample

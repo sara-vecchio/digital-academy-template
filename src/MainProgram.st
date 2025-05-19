@@ -227,7 +227,7 @@ PROGRAM MainProgram
     
 
     IF Isc THEN //se il sensore prima del deviatore vede un pacco
-        IF deviatori[5].IsMyColor_coda(Idc) THEN // controllo se il pacco è da smistare
+        IF deviatori[5].IsMyColor_coda(Idc,Isc) THEN // controllo se il pacco è da smistare
             IF magazzini[5].isFull() THEN //se il magazzino è pieno
                 deviatori[5].Discard();
                 Qdc := deviatori[5].bCmd; //disattivo il deviatore

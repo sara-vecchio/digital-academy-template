@@ -47,7 +47,7 @@ NAMESPACE Libreria
             Imc : BOOL;
         END_VAR
 
-        VAR_EXTERNAL
+        VAR_IN_OUT//_EXTERNAL
             elapsedtimer : tempo.Timer;
         END_VAR
 

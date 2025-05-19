@@ -41,7 +41,7 @@ NAMESPACE Libreria
 
 
         METHOD PUBLIC Counter //aumento il numero di pacchi contati nel magazzino
-            currentStockLevel := currentStockLevel + 1;
+        ;  //  currentStockLevel := currentStockLevel + 1;
         END_METHOD
 
    

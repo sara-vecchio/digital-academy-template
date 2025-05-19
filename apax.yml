@@ -10,16 +10,17 @@ targets:
   - llvm
 
 catalogs:
-  "@ax/simatic-ax": 2411.1.0
+  "@ax/simatic-ax": 2504.0.0
 
 devDependencies:
-  "@ax/sdk": 2411.1.0
-  "@ax/pc-identifier": ^1.1.0
+  "@ax/sdk": 2504.0.0
+  # "@ax/pc-identifier": ^1.1.0
+  "@ax/trace": 2.9.0
 
 dependencies:
-  "@ax/simatic-1500-tasks": 7.0.6
-  "@ax/system-timer": 8.0.7
-  "@ax/simatic-1500-clocks": 8.0.8
+  "@ax/simatic-1500-tasks": 10.0.1
+  "@ax/system-timer": 10.0.24
+  "@ax/simatic-1500-clocks": 10.0.6
   #"@sara-vecchio/hello-world-ax": ^0.1.5
   #"@ax/system-timer": 8.0.7
   #"@ax/system-edgedetection": 8.0.7  

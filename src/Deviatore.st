@@ -25,7 +25,7 @@ NAMESPACE Libreria
 
         METHOD PUBLIC Accept 
             bCmd := TRUE;
-            nCountAccepted := nCountAccepted + 1;
+            //nCountAccepted := nCountAccepted + 1;
         END_METHOD
 
 
